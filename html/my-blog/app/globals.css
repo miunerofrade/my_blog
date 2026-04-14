@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --font-brush: var(--font-brush);
+  --color-ink: #1d1d1f;
+  --color-pampas:#F4F3EE;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #F4F3EE;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  overflow: hidden;
+}
