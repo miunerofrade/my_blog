@@ -1,63 +1,51 @@
 "use client";
 
-import {useState, useEffect} from 'react';
-import { PoemBlock } from '@/type';
-import { generatePoemBlocks } from '@/lib/utils';
-import poems from '@/data/poems.json';
+import { motion } from "framer-motion";
+import NavButton from "@/components/button";
+import { BackgroundGlow, BackgroundGrid } from "@/components/background";
+
+const NAVIGATION_ITEMS = [
+  { label: "Read My Blogs", href: "/article" },
+  { label: "About Me", href: "#" },
+  { label: "Projects", href: "#" },
+];
 
 export default function Home() {
-  const [poemBlocks, setPoemBlocks] = useState<PoemBlock[]>([]);
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
-
-  useEffect(() => {
-    setPoemBlocks(generatePoemBlocks(poems));
-  }, []);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePos({ x: e.clientX, y: e.clientY });
-  };
-
   return (
-  <main onMouseMove={handleMouseMove} className="relative w-screen h-screen bg-[#f4f4f2] overflow-hidden font-brush">
-    
-    <div 
-      className="absolute inset-0 pointer-events-none"
-      style={{
+    <main className="relative z-10 min-h-[calc(100vh-50px)] bg-background text-foreground selection:bg-terracotta selection:text-background flex flex-col items-center p-6 md:p-12 text-center">
+      <BackgroundGlow />
+      <BackgroundGrid />
+      <div className="w-full max-w-[1080px] flex flex-col items-center">
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          style={{ paddingTop: 'calc((100vh - 50px) / 4)' }}
+          className="flex flex-col items-center gap-[3vh] w-full"
+        >
 
-        WebkitMaskImage: `radial-gradient(16rem circle at ${mousePos.x}px ${mousePos.y}px, transparent 80%, black 100%)`,
-        maskImage: `radial-gradient(16rem circle at ${mousePos.x}px ${mousePos.y}px, transparent 80%, black 100%)`,
-      }}
-    >
-      {poemBlocks.map((b, i) => (
-        <div key={`black-${i}`} style={b.style} 
-          className={`absolute [writing-mode:vertical-rl] whitespace-nowrap text-ink/90 
-              ${b.layer === 3 ? 'blur-[3px] scale-125 text-[clamp(2rem,2vw,3rem)]' : ''}
-              ${b.layer === 2 ? 'blur-[2px] scale-125 text-[clamp(2rem,2vw,3rem)]' : ''}
-              ${b.layer === 1 ? 'blur-[1px] scale-125 text-[clamp(3rem,3vw,4rem)]' : ''}`}
-          >{b.text}
-        </div>
-      ))}
-    </div>
+          <h1 className="relative left-[0.2ch] text-[clamp(3.5rem,8vw,8rem)] font-black tracking-tighter leading-none uppercase max-w-5xl mx-auto">
+            Welcome<span className="text-terracotta">.</span>
+          </h1>
+          
+          <p className="relative left-[0.5em] text-[clamp(1.125rem,2.5vw,1.5rem)] font-medium opacity-80 leading-loose max-w-2xl font-sans">
+            欢迎。
+          </p>
 
-    <div 
-      className="absolute inset-0 z-10 pointer-events-none"
-      style={{
-        WebkitMaskImage: `radial-gradient(16rem circle at ${mousePos.x}px ${mousePos.y}px, black 80%, transparent 100%)`,
-        maskImage: `radial-gradient(16rem circle at ${mousePos.x}px ${mousePos.y}px, black 80%, transparent 100%)`,
-      }}
-    >
-      {poemBlocks.map((b, i) => (
-        <div key={`gold-${i}`} style={b.style} 
-          className={`absolute [writing-mode:vertical-rl] whitespace-nowrap text-[#deba46] 
-              ${b.layer === 3 ? 'blur-[3px] scale-125 text-[clamp(2rem,2vw,3rem)]' : ''}
-              ${b.layer === 2 ? 'blur-[2px] scale-125 text-[clamp(2rem,2vw,3rem)]' : ''}
-              ${b.layer === 1 ? 'blur-[1px] scale-125 text-[clamp(3rem,3vw,4rem)]'  : ''}`} 
-          >
-          {b.text}
-        </div>
-      ))}
-    </div>
+          <div className="flex flex-col items-center gap-[3vh] w-full max-w-[320px]">
+            {NAVIGATION_ITEMS.map((item, index) => (
+              <NavButton 
+                key={index} 
+                label={item.label}
+                href={item.href} 
+                isPrimary={index === 0} 
+              />
+            ))}
+          </div>
+        </motion.div>
 
-  </main> 
-);
+      </div>
+    </main>
+  );
 }

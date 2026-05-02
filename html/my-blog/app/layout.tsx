@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono,Ma_Shan_Zheng} from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Providers } from "./providers";
 import Navbar from "@/components/navbar";
 import "./globals.css";
 
@@ -13,11 +14,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const maShanZheng = Ma_Shan_Zheng({
-  weight: "400",
-  subsets: ["latin"], 
-  variable: "--font-brush",
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -31,17 +27,19 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="zh-CN"
+      lang="zh-CN" 
+      suppressHydrationWarning
       translate="no"
-      className={`${geistSans.variable} ${geistMono.variable} ${maShanZheng.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-     <body className="min-h-full flex flex-col">
-        <Navbar /> 
+      <body className="min-h-full flex flex-col bg-background text-foreground ">
 
-        <main className="flex-grow">
-          {children}
-        </main>
-        
+        <Providers>
+          <Navbar /> 
+          <main className="flex-grow">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

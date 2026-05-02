@@ -7,8 +7,6 @@ function shuffle<T>(array: T[]): T[] {
 export function generatePoemBlocks(poems: { text: string, mustL1?: boolean }[]): PoemBlock[] {
   const count = poems.length;
   
-  const laneWidth = 100 / count; 
-  
   const laneIndices = Array.from({ length: count }, (_, i) => i);
   const shuffledLanes = laneIndices.sort(() => Math.random() - 0.5);
 
@@ -19,17 +17,29 @@ export function generatePoemBlocks(poems: { text: string, mustL1?: boolean }[]):
     const laneIndex = shuffledLanes[index];
     const layer = poem.mustL1 ? 1 : layerPool[index];
 
-    const left = (laneIndex * laneWidth) + (Math.random() * (laneWidth * 0.4));
+    const isRightSide = index >= count / 2;
     
-    const topBase = Math.random() * 30; 
-    const top = topBase;
+    let left = 0;
+    if (!isRightSide) {
+      const leftZoneWidth = 35;
+      const normalizedIndex = index / (count / 2); 
+      left = normalizedIndex * leftZoneWidth;
+    } else {
+      const rightZoneWidth = 35;
+      const normalizedIndex = (index - count / 2) / (count / 2);
+      left = 65 + (normalizedIndex * rightZoneWidth);
+    }
+
+    left += (Math.random() - 0.5) * 5; 
+
+    const topBase = Math.random() * 40 ; 
 
     return {
       text: poem.text,
       layer,
       style: {
         left: `${left}%`,
-        top: `${top}%`,
+        top: `${topBase}%`,
       }
     };
   });

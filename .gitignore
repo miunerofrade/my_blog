@@ -1,0 +1,22 @@
+# cpp
+cpp/
+
+# rust
+rust/
+
+# python
+python/
+
+# tmp
+tmp/
+
+# note
+note/
+
+# html - node_modules & other generated files
+html/node_modules/
+html/Apple.html
+html/index.html
+html/package-lock.json
+html/package.json
+html/*.png

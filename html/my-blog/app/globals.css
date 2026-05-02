@@ -1,19 +1,77 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-@theme {
-  --font-brush: var(--font-brush);
-  --color-ink: #1d1d1f;
-  --color-pampas:#F4F3EE;
+html code,
+html pre {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg) !important;
 }
 
+html span[data-line] span {
+  color: var(--shiki-light);
+}
+
+:not(pre) > code {
+  background-color: var(--color-foreground) !important;
+  color: var(--color-background) !important;
+  opacity: 0.8;
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.25rem;
+}
+
+html pre {
+  padding: 1rem !important;
+  border-radius: 0.5rem !important;
+}
+
+html.dark code,
+html.dark pre {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+html.dark span[data-line] span {
+  color: var(--shiki-dark);
+}
+
+figure[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@theme {
+  --color-ink: #1d1d1f;
+  --color-pampas:hsl(60deg 12% 97% / 1);
+  --color-terracotta:hsl(15deg 63% 60% / 1);
+
+  --color-background: var(--bg-color);
+  --color-foreground: var(--text-color);
+}
+:root {
+  --bg-color: var(--color-pampas);
+  --text-color: var(--color-ink);
+  --dot-color: #1d1d1f;
+}
+.dark {
+  --bg-color: black;
+  --text-color: var(--color-pampas);
+  --dot-color: #F6F6F2;
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+*::selection {
+  background-color:var(--color-terracotta) !important;
+  color: white !important;
+}
+
 body {
-  background: #F4F3EE;
+  background: var(--bg-color);
+  color: var(--text-color);
   font-family: ui-sans-serif, system-ui, sans-serif;
-  overflow: hidden;
 }
