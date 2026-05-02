@@ -55,22 +55,8 @@ export default async function PostPage({
     // 拦截原生的 pre，换成我们带一键复制的特制代码块组件
     pre: CodeBlock,
     img: (props: any) => {
-      const { src, alt, title, width, height, style, ...rest } = props;
-      // 从 title 中提取尺寸（remarkImageSize 插件将尺寸编码为 JSON）
-      let parsedWidth = width;
-      let parsedHeight = height;
-      if (!parsedWidth && !parsedHeight && title) {
-        try {
-          const parsed = JSON.parse(title);
-          if (parsed.w) parsedWidth = parsed.w;
-          if (parsed.h) parsedHeight = parsed.h;
-        } catch {
-          // title 不是 JSON（正常标题），忽略
-        }
-      }
-      const widthValue = parsedWidth ? (isNaN(Number(parsedWidth)) ? parsedWidth : `${parsedWidth}px`) : undefined;
-      const heightValue = parsedHeight ? (isNaN(Number(parsedHeight)) ? parsedHeight : `${parsedHeight}px`) : undefined;
-
+      // 简化 img 组件：只保留基本的响应式，去掉复杂的宽高解析逻辑
+      const { src, alt, title, width, height, ...rest } = props;
       return (
         <img
           src={src}
@@ -81,10 +67,7 @@ export default async function PostPage({
           style={{
             display: "block",
             maxWidth: "100%",
-            width: widthValue,
-            height: heightValue,
-            objectFit: "cover",
-            ...style,
+            height: "auto",
           }}
           {...rest}
         />
