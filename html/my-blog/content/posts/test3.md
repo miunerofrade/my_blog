@@ -38,7 +38,7 @@ readTime: "4 min read"
 
 ## 图片测试
 
-<img src="https://picsum.photos/200/100" alt="替代文本，图片无法显示时出现" title="图片标题" width="400" height="800" />
+![替代文本，图片无法显示时出现](https://picsum.photos/200/100 "title=图片标题,align=center")
 
 
 ## 自动链接

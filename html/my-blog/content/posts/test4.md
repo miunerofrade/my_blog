@@ -71,4 +71,3 @@ ax + by \\
 cx + dy
 \end{pmatrix}
 $$
-```

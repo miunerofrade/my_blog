@@ -1,4 +1,5 @@
-import { getPostData, getAllPostSlugs } from "@/lib/posts";
+import { getPostData, getAllPostSlugs, getGroupedPosts } from "@/lib/posts";
+import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -10,7 +11,7 @@ import { Mermaid } from "@/components/mermaid";
 import { CodeBlock } from "@/components/code-block";
 import { BackButton } from "@/components/back-button";
 import { Spacer } from "@/components/spacer";
-import { remarkImageSize } from "@/lib/remark-img-size";
+import { remarkImgAttrs } from "@/lib/remark-img-attrs";
 
 // 1. 生成静态路径逻辑保持不变
 export async function generateStaticParams() {
@@ -51,24 +52,54 @@ export default async function PostPage({
   // 现在 slug 不再是 undefined 了
   const postData = getPostData(slug);
 
+  // 获取排序后的文章列表，用于上下篇和结尾列表
+  const groups = getGroupedPosts();
+  const sortedPosts = groups.flatMap((g) => g.posts);
+  const currentIndex = sortedPosts.findIndex((p) => p.slug === slug);
+  const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
+  const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+  const otherPosts = sortedPosts.filter((p) => p.slug !== slug).slice(0, 5);
+
   const components = {
     // 拦截原生的 pre，换成我们带一键复制的特制代码块组件
     pre: CodeBlock,
     img: (props: any) => {
-      // 简化 img 组件：只保留基本的响应式，去掉复杂的宽高解析逻辑
-      const { src, alt, title, width, height, ...rest } = props;
+      const { src, alt, title, ...rest } = props;
+
+      let width: number | undefined;
+      let height: number | undefined;
+      let align: string | undefined;
+      let displayTitle: string | undefined;
+
+      if (title) {
+        try {
+          const p = JSON.parse(title);
+          width        = p.w      ? Number(p.w)      : undefined;
+          height       = p.h      ? Number(p.h)      : undefined;
+          align        = p.align  ?? undefined;
+          displayTitle = p.title  ?? undefined;  // 真实 tooltip 文字
+        } catch {
+          // title 不是 JSON（降级），直接显示原始 title
+          displayTitle = title;
+        }
+      }
+
+      const style: React.CSSProperties = {
+        maxWidth: "100%",
+        height: height ? `${height}px` : "auto",
+        ...(align === "center" && { display: "block", margin: "0 auto" }),
+        ...(align === "left"   && { float: "left",  marginRight: "1.5rem" }),
+        ...(align === "right"  && { float: "right", marginLeft: "1.5rem" }),
+      };
+
       return (
         <img
           src={src}
           alt={alt}
-          title={title}
+          title={displayTitle}
           width={width}
           height={height}
-          style={{
-            display: "block",
-            maxWidth: "100%",
-            height: "auto",
-          }}
+          style={style}
           {...rest}
         />
       );
@@ -104,11 +135,16 @@ export default async function PostPage({
         {/* 优化后的排版，类似 Deepseek：更干净的字体颜色，去除 prose 对代码的强制背景 */}
         <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none 
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground dark:prose-headings:text-foreground
-          prose-a:text-blue-600 dark:prose-a:text-blue-400 
+          prose-h1:mt-10 prose-h1:mb-4
+          prose-h2:mt-8 prose-h2:mb-3
+          prose-h3:mt-6 prose-h3:mb-2
+          prose-a:text-terracotta dark:prose-a:text-terracotta 
           prose-p:leading-8 prose-p:text-foreground dark:prose-p:text-foreground
           prose-li:text-foreground dark:prose-li:text-foreground
           prose-strong:text-foreground dark:prose-strong:text-foreground
           prose-table:text-[1.05rem] prose-table:mb-10
+          prose-th:text-foreground dark:prose-th:text-foreground
+          prose-td:text-foreground dark:prose-td:text-foreground
           prose-pre:p-0 prose-pre:bg-transparent prose-pre:m-0
           prose-code:before:content-none prose-code:after:content-none
           prose-code:text-foreground dark:prose-code:text-foreground"
@@ -118,7 +154,7 @@ export default async function PostPage({
             components={components}
             options={{
               mdxOptions: {
-                remarkPlugins: [remarkMath, remarkGfm, remarkImageSize],
+                remarkPlugins: [remarkMath, remarkGfm, remarkImgAttrs],
                 rehypePlugins: [
                   preProcessMermaid,
                   rehypeKatex, 
@@ -130,6 +166,65 @@ export default async function PostPage({
               }
             }}
           />
+        </div>
+
+        {/* 底部导航区域，统一管理间距 */}
+        <div className="mt-16 flex flex-col gap-12">
+
+        {/* 上一篇 / 下一篇 */}
+        <nav className="grid grid-cols-2 gap-4 border-t border-foreground/10 pt-14">
+          {prevPost ? (
+            <Link href={`/article/${prevPost.slug}`}
+              className="group flex flex-col gap-1 p-4 rounded-xl border border-foreground/10
+                hover:border-terracotta/40 hover:bg-foreground/3 transition-all duration-200">
+              <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">← 上一篇</span>
+              <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
+                transition-colors duration-200 line-clamp-2">
+                {prevPost.title}
+              </span>
+            </Link>
+          ) : <div />}
+
+          {nextPost ? (
+            <Link href={`/article/${nextPost.slug}`}
+              className="group flex flex-col gap-1 p-4 rounded-xl border border-foreground/10
+                hover:border-terracotta/40 hover:bg-foreground/3 transition-all duration-200 text-right">
+              <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">下一篇 →</span>
+              <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
+                transition-colors duration-200 line-clamp-2">
+                {nextPost.title}
+              </span>
+            </Link>
+          ) : <div />}
+        </nav>
+
+        {/* 更多文章 */}
+        {otherPosts.length > 0 && (
+          <div className="border-t border-foreground/10 pt-10 mt-2">
+            <p className="text-xs font-bold tracking-widest uppercase text-foreground/30 mb-4">
+              更多文章
+            </p>
+            <div className="flex flex-col gap-2">
+              {otherPosts.map((post) => (
+                <Link key={post.slug} href={`/article/${post.slug}`}
+                  className="group flex items-center justify-between py-4 border-b border-foreground/6
+                    hover:border-foreground/20 transition-colors duration-200">
+                  <span className="text-sm font-medium text-foreground/80 group-hover:text-foreground
+                    transition-colors duration-200">
+                    {post.title}
+                  </span>
+                  <span className="text-xs text-foreground/30 shrink-0 ml-4">{post.date}</span>
+                </Link>
+              ))}
+            </div>
+            <Link href="/article"
+              className="inline-block mt-4 text-xs font-bold tracking-widest uppercase
+                text-terracotta/70 hover:text-terracotta transition-colors duration-200">
+              查看全部 →
+            </Link>
+          </div>
+        )}
+
         </div>
 
       </article>
