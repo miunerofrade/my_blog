@@ -53,11 +53,14 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       className={`
         w-full h-[50px] flex justify-center sticky top-0 z-[100]
         transition-all duration-300 ease-out
-        ${isScrolled || megaOpen
-          ? "bg-background/70 backdrop-blur-md border-b border-foreground/10"
-          : "bg-transparent border-transparent"
+        ${megaOpen
+          ? "border-transparent bg-white dark:bg-zinc-950"
+          : isScrolled
+            ? "bg-background/70 backdrop-blur-md border-b border-foreground/10"
+            : "bg-transparent border-transparent"
         }
       `}
+      style={megaOpen ? { backgroundColor: 'var(--background, var(--bg-color))' } : {}}
     >
       <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-6">
 
