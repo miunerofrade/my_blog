@@ -53,7 +53,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       className={`
         w-full h-[50px] flex justify-center sticky top-0 z-[100]
         transition-all duration-300 ease-out
-        ${isScrolled
+        ${isScrolled || megaOpen
           ? "bg-background/70 backdrop-blur-md border-b border-foreground/10"
           : "bg-transparent border-transparent"
         }
@@ -68,8 +68,8 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           </Link>
         </div>
 
-        {/* Nav links — relative 放这里作为 mega menu 定位基准 */}
-        <div className="flex-1 flex justify-center gap-12 text-base font-bold tracking-widest uppercase relative">
+        {/* Nav links */}
+        <div className="flex-1 flex justify-center gap-12 text-base font-bold tracking-widest uppercase">
           {NAV_LINKS.map((link) => {
             const isActive =
               link.href === "/"
@@ -102,57 +102,6 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                   )}
                 </Link>
 
-                {/* Mega menu */}
-                <AnimatePresence>
-                  {isArticle && megaOpen && recentPosts.length > 0 && (
-                    <div className="absolute top-[calc(100%+1rem)] left-1/2"
-                      style={{ transform: 'translateX(calc(-50% + 0.75rem))' }}>
-                      <motion.div
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 8 }}
-                        transition={{ duration: 0.18, ease: "easeOut" }}
-                        className="w-[31.25rem] bg-background/95 backdrop-blur-md border border-foreground/10
-                          rounded-xl shadow-xl overflow-hidden"
-                      >
-                        {/* 箭头 */}
-                        <div className="absolute -top-1.5 left-1/2 w-3 h-3
-                          bg-background/95 border-l border-t border-foreground/10"
-                          style={{ transform: 'translateX(calc(-50% - 0.75rem)) rotate(45deg)' }} />
-
-                        <div className="p-6" style={{ padding: '1.5rem' }}>
-                          <p className="text-xs font-bold tracking-widest uppercase text-foreground/30 mb-4">
-                            最近文章
-                          </p>
-                          <div className="grid grid-cols-2 gap-3">
-                            {recentPosts.map((post) => (
-                              <Link
-                                key={post.slug}
-                                href={`/article/${post.slug}`}
-                                className="group flex flex-col rounded-lg px-0 py-2.5 hover:bg-foreground/5 transition-colors duration-200"
-                              >
-                                <p className="text-sm font-semibold text-foreground group-hover:text-terracotta
-                                  transition-colors duration-200 line-clamp-2 leading-snug">
-                                  {post.title}
-                                </p>
-                                <p className="text-xs text-foreground/40 mt-1">{post.date}</p>
-                              </Link>
-                            ))}
-                          </div>
-                          <div className="mt-3 pt-3 border-t border-foreground/8">
-                            <Link
-                              href="/article"
-                              className="text-xs font-bold tracking-widest uppercase text-terracotta/70
-                                hover:text-terracotta transition-colors duration-200"
-                            >
-                              查看全部文章 →
-                            </Link>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </div>
-                  )}
-                </AnimatePresence>
               </div>
             );
           })}
@@ -163,6 +112,66 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           <ThemeToggle />
         </div>
       </div>
+
+      {/* --- 无缝托盘 (Seamless Tray) --- */}
+      <AnimatePresence>
+        {megaOpen && recentPosts.length > 0 && (
+          <motion.div
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
+            className="absolute top-full left-0 w-full flex justify-center border-b border-foreground/10 z-[60] shadow-sm overflow-hidden bg-white dark:bg-zinc-950"
+            style={{ backgroundColor: 'var(--background, var(--bg-color))' }}
+            onMouseEnter={() => {
+              clearTimeout(leaveTimer.current);
+              clearTimeout(enterTimer.current);
+              setMegaOpen(true);
+            }}
+            onMouseLeave={handleArticleLeave}
+          >
+            <motion.div
+              className="w-full max-w-[1080px] px-6 flex flex-row"
+              style={{ gap: '4rem', paddingTop: '3rem', paddingBottom: '3rem' }}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.15, ease: "easeOut" }}
+            >
+              {/* 左侧 Sidebar */}
+              <div style={{ width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <span className="text-xs font-black tracking-widest text-foreground/40 uppercase">
+                  LATEST ARTICLES
+                </span>
+                <Link
+                  href="/article"
+                  className="text-xs font-bold tracking-widest text-terracotta hover:text-terracotta/70 transition-colors"
+                >
+                  查看全部文章 →
+                </Link>
+              </div>
+
+              {/* 右侧 Grid */}
+              <div style={{ flexGrow: 1, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '3rem' }}>
+                {recentPosts.slice(0, 3).map((post) => (
+                  <Link
+                    key={post.slug}
+                    href={`/article/${post.slug}`}
+                    className="group"
+                    style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+                  >
+                    <span className="text-xs font-medium text-foreground/40 border-b border-foreground/10" style={{ paddingBottom: '0.5rem' }}>
+                      {post.date}
+                    </span>
+                    <h3 className="text-sm font-bold leading-relaxed text-foreground group-hover:text-terracotta transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }
