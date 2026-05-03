@@ -80,6 +80,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
             return (
               <div
                 key={link.href}
+                className={isArticle ? "relative" : ""}
                 onMouseEnter={isArticle ? handleArticleEnter : undefined}
                 onMouseLeave={isArticle ? handleArticleLeave : undefined}
               >
@@ -104,49 +105,52 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                 {/* Mega menu */}
                 <AnimatePresence>
                   {isArticle && megaOpen && recentPosts.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
-                      transition={{ duration: 0.18, ease: "easeOut" }}
-                      className="absolute top-[calc(100%+12px)] left-1/2 -translate-x-1/2 w-[480px]
-                        bg-background/95 backdrop-blur-md border border-foreground/10
-                        rounded-xl shadow-xl overflow-hidden"
-                    >
-                      {/* 箭头 */}
-                      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3
-                        bg-background/95 border-l border-t border-foreground/10 rotate-45" />
+                    <div className="absolute top-[calc(100%+16px)] left-1/2"
+                      style={{ transform: 'translateX(calc(-50% + 12px))' }}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                        className="w-[500px] bg-background/95 backdrop-blur-md border border-foreground/10
+                          rounded-xl shadow-xl overflow-hidden"
+                      >
+                        {/* 箭头 */}
+                        <div className="absolute -top-1.5 left-1/2 w-3 h-3
+                          bg-background/95 border-l border-t border-foreground/10"
+                          style={{ transform: 'translateX(calc(-50% - 12px)) rotate(45deg)' }} />
 
-                      <div className="p-5">
-                        <p className="text-xs font-bold tracking-widest uppercase text-foreground/30 mb-3 mx-1">
-                          最近文章
-                        </p>
-                        <div className="grid grid-cols-2 gap-2">
-                          {recentPosts.map((post) => (
+                        <div className="p-6" style={{ padding: '1.5rem' }}>
+                          <p className="text-xs font-bold tracking-widest uppercase text-foreground/30 mb-4">
+                            最近文章
+                          </p>
+                          <div className="grid grid-cols-2 gap-3">
+                            {recentPosts.map((post) => (
+                              <Link
+                                key={post.slug}
+                                href={`/article/${post.slug}`}
+                                className="group flex flex-col rounded-lg px-0 py-2.5 hover:bg-foreground/5 transition-colors duration-200"
+                              >
+                                <p className="text-sm font-semibold text-foreground group-hover:text-terracotta
+                                  transition-colors duration-200 line-clamp-2 leading-snug">
+                                  {post.title}
+                                </p>
+                                <p className="text-xs text-foreground/40 mt-1">{post.date}</p>
+                              </Link>
+                            ))}
+                          </div>
+                          <div className="mt-3 pt-3 border-t border-foreground/8">
                             <Link
-                              key={post.slug}
-                              href={`/article/${post.slug}`}
-                              className="group p-3 px-4 rounded-lg hover:bg-foreground/5 transition-colors duration-200"
+                              href="/article"
+                              className="text-xs font-bold tracking-widest uppercase text-terracotta/70
+                                hover:text-terracotta transition-colors duration-200"
                             >
-                              <p className="text-sm font-semibold text-foreground group-hover:text-terracotta
-                                transition-colors duration-200 line-clamp-2 leading-snug">
-                                {post.title}
-                              </p>
-                              <p className="text-xs text-foreground/40 mt-1">{post.date}</p>
+                              查看全部文章 →
                             </Link>
-                          ))}
+                          </div>
                         </div>
-                        <div className="mt-3 pt-3 border-t border-foreground/8 mx-1">
-                          <Link
-                            href="/article"
-                            className="text-xs font-bold tracking-widest uppercase text-terracotta/70
-                              hover:text-terracotta transition-colors duration-200"
-                          >
-                            查看全部文章 →
-                          </Link>
-                        </div>
-                      </div>
-                    </motion.div>
+                      </motion.div>
+                    </div>
                   )}
                 </AnimatePresence>
               </div>

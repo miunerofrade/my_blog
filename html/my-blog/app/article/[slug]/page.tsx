@@ -61,6 +61,10 @@ export default async function PostPage({
   const otherPosts = sortedPosts.filter((p) => p.slug !== slug).slice(0, 5);
 
   const components = {
+    // 接管标题渲染 —— prose 插件的后代选择器权重高于 Tailwind 原子类，必须加 !important 击穿
+    h1: (props: any) => <h1 className="text-3xl md:text-4xl font-black !mt-20 !mb-10 tracking-tight leading-tight text-foreground" {...props} />,
+    h2: (props: any) => <h2 className="text-2xl md:text-3xl font-bold !mt-16 !mb-8 tracking-tight leading-snug text-foreground" {...props} />,
+    h3: (props: any) => <h3 className="text-xl md:text-2xl font-bold !mt-10 !mb-6 tracking-tight leading-snug text-foreground" {...props} />,
     // 拦截原生的 pre，换成我们带一键复制的特制代码块组件
     pre: CodeBlock,
     img: (props: any) => {
@@ -133,11 +137,8 @@ export default async function PostPage({
         </header>
 
         {/* 优化后的排版，类似 Deepseek：更干净的字体颜色，去除 prose 对代码的强制背景 */}
-        <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none 
+        <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground dark:prose-headings:text-foreground
-          prose-h1:mt-10 prose-h1:mb-4
-          prose-h2:mt-8 prose-h2:mb-3
-          prose-h3:mt-6 prose-h3:mb-2
           prose-a:text-terracotta dark:prose-a:text-terracotta 
           prose-p:leading-8 prose-p:text-foreground dark:prose-p:text-foreground
           prose-li:text-foreground dark:prose-li:text-foreground
@@ -169,38 +170,41 @@ export default async function PostPage({
         </div>
 
         {/* 底部导航区域，统一管理间距 */}
-        <div className="mt-16 flex flex-col gap-12">
+        <div className="mt-24 flex flex-col gap-16">
 
         {/* 上一篇 / 下一篇 */}
-        <nav className="grid grid-cols-2 gap-4 border-t border-foreground/10 pt-14">
-          {prevPost ? (
-            <Link href={`/article/${prevPost.slug}`}
-              className="group flex flex-col gap-1 p-4 rounded-xl border border-foreground/10
-                hover:border-terracotta/40 hover:bg-foreground/3 transition-all duration-200">
-              <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">← 上一篇</span>
-              <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
-                transition-colors duration-200 line-clamp-2">
-                {prevPost.title}
-              </span>
-            </Link>
-          ) : <div />}
+        <div>
+          <hr className="border-t border-foreground/10" />
+          <nav className="grid grid-cols-2 gap-4" style={{ marginTop: '2.5rem' }}>
+            {prevPost ? (
+              <Link href={`/article/${prevPost.slug}`}
+                className="group flex flex-col gap-3 py-6 px-4 border-l-2 border-transparent
+                  hover:border-terracotta hover:bg-foreground/5 transition-all duration-200">
+                <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">← 上一篇</span>
+                <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
+                  transition-colors duration-200 line-clamp-2">
+                  {prevPost.title}
+                </span>
+              </Link>
+            ) : <div />}
 
-          {nextPost ? (
-            <Link href={`/article/${nextPost.slug}`}
-              className="group flex flex-col gap-1 p-4 rounded-xl border border-foreground/10
-                hover:border-terracotta/40 hover:bg-foreground/3 transition-all duration-200 text-right">
-              <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">下一篇 →</span>
-              <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
-                transition-colors duration-200 line-clamp-2">
-                {nextPost.title}
-              </span>
-            </Link>
-          ) : <div />}
-        </nav>
+            {nextPost ? (
+              <Link href={`/article/${nextPost.slug}`}
+                className="group flex flex-col gap-3 py-6 px-4 border-r-2 border-transparent
+                  hover:border-terracotta hover:bg-foreground/5 transition-all duration-200 text-right">
+                <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">下一篇 →</span>
+                <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
+                  transition-colors duration-200 line-clamp-2">
+                  {nextPost.title}
+                </span>
+              </Link>
+            ) : <div />}
+          </nav>
+        </div>
 
         {/* 更多文章 */}
         {otherPosts.length > 0 && (
-          <div className="border-t border-foreground/10 pt-10 mt-2">
+          <div className="border-t border-foreground/10 pt-8">
             <p className="text-xs font-bold tracking-widest uppercase text-foreground/30 mb-4">
               更多文章
             </p>

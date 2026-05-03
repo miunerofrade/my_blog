@@ -75,3 +75,33 @@ body {
   color: var(--text-color);
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
+
+/* ========== Markdown 表格样式 ========== */
+/* @tailwindcss/typography 插件只提供 padding/字号，不包含边框。
+   同时 Tailwind preflight 和全局 * 重置会清除浏览器默认样式，
+   因此需要手动补齐表格的边框和间距。 */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.prose thead th {
+  border-bottom: 2px solid var(--color-foreground);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.prose tbody td {
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  padding: 0.75rem 1rem;
+}
+
+.prose tbody tr:last-child td {
+  border-bottom: 2px solid var(--color-foreground);
+}
