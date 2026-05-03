@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./theme-toggle";
@@ -19,9 +19,11 @@ interface NavbarProps {
 export default function Navbar({ recentPosts = [] }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const pathname = usePathname();
   const enterTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const navContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -29,9 +31,13 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 路由跳转时关闭 mega menu
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMegaOpen(false);
+    if (!navContainerRef.current) return;
+    const activeEl = navContainerRef.current.querySelector<HTMLElement>('[data-active="true"]');
+    if (activeEl) {
+      setIndicatorStyle({ left: activeEl.offsetLeft, width: activeEl.offsetWidth, opacity: 1 });
+    }
   }, [pathname]);
 
   const handleArticleEnter = () => {
@@ -47,7 +53,6 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
 
   return (
     <motion.nav
-      layoutRoot
       initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -73,7 +78,10 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
         </div>
 
         {/* Nav links */}
-        <div className="flex-1 flex justify-center gap-12 text-base font-bold tracking-widest uppercase">
+        <div
+          ref={navContainerRef}
+          className="flex-1 flex justify-center gap-12 relative text-base font-bold tracking-widest uppercase"
+        >
           {NAV_LINKS.map((link) => {
             const isActive =
               link.href === "/"
@@ -84,31 +92,31 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
             return (
               <div
                 key={link.href}
-                className={isArticle ? "relative" : ""}
+                data-active={isActive}
                 onMouseEnter={isArticle ? handleArticleEnter : undefined}
                 onMouseLeave={isArticle ? handleArticleLeave : undefined}
               >
                 <Link
                   href={link.href}
-                  className={`relative py-1 transition-colors duration-300 block ${
+                  className={`py-1 transition-colors duration-300 block ${
                     isActive
                       ? "text-terracotta"
                       : "text-foreground/80 hover:text-terracotta"
                   }`}
                 >
                   {link.label}
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-active-indicator"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-terracotta rounded-full"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
                 </Link>
-
               </div>
             );
           })}
+
+          {/* 底部滑动指示器，仅水平方向动画 */}
+          <motion.div
+            initial={false}
+            animate={indicatorStyle}
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+            className="absolute bottom-0 h-[2px] bg-terracotta rounded-full pointer-events-none"
+          />
         </div>
 
         {/* Theme toggle */}
