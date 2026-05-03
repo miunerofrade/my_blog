@@ -47,6 +47,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
 
   return (
     <motion.nav
+      layoutRoot
       initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
