@@ -170,7 +170,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
                         </Link>
                       ) : (
                         <Link key={post.slug} href={`/article/${post.slug}`}>
-                          <div className="group flex items-start justify-between py-6 border-b border-foreground/10 hover:border-foreground/30 transition-colors duration-300">
+                          <div className="group relative flex items-start justify-between py-6 transition-colors duration-300">
                             <span className="w-28 md:w-36 shrink-0 text-sm font-bold tracking-widest text-foreground/40 uppercase mt-1">
                               {post.date}
                             </span>
@@ -188,6 +188,23 @@ export default function ArticleClient({ initialData = [] }: Props) {
                                 →
                               </span>
                             </div>
+                          {/* --- 动态斜向滑入的底部激活线 --- */}
+                          <svg
+                            className="absolute bottom-0 left-0 w-full h-[2px] -z-10"
+                            viewBox="0 0 100 2"
+                            preserveAspectRatio="none"
+                          >
+                            {/* 背景底线 (静态灰色) */}
+                            <rect x="0" y="1" width="100" height="1" className="fill-foreground/10" />
+                            {/* 激活线 (Terracotta, 初始隐藏在下方) */}
+                            <rect
+                              x="0"
+                              y="1"
+                              width="100"
+                              height="1"
+                              className="fill-terracotta transition-all duration-500 ease-out translate-y-[2px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
+                            />
+                          </svg>
                           </div>
                         </Link>
                       )
