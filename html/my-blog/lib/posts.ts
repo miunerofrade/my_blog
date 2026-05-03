@@ -11,6 +11,34 @@ export interface PostData {
   excerpt: string;
   readTime: string;
   year: string;
+  tags?: string[];
+}
+
+export interface PostDataWithContent extends PostData {
+  content: string;
+  headings: HeadingItem[];
+}
+
+export interface HeadingItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+export function extractHeadings(content: string): HeadingItem[] {
+  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
+  const headings: HeadingItem[] = [];
+  let match;
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = match[1].length;
+    const text = match[2].trim();
+    const id = text
+      .toLowerCase()
+      .replace(/[^\w一-鿿]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    headings.push({ id, text, level });
+  }
+  return headings;
 }
 
 export function getGroupedPosts(): { year: string; posts: PostData[] }[] {
@@ -36,6 +64,7 @@ export function getGroupedPosts(): { year: string; posts: PostData[] }[] {
         date: data.date,
         excerpt: data.excerpt,
         readTime: data.readTime,
+        tags: data.tags || [],
       } as PostData;
     });
 
@@ -72,7 +101,7 @@ export function getAllPostSlugs() {
 }
 
 // 根据 slug 获取单篇文章的完整内容
-export function getPostData(slug: string) {
+export function getPostData(slug: string): PostDataWithContent {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   
@@ -85,5 +114,40 @@ export function getPostData(slug: string) {
     title: data.title as string,
     date: data.date as string,
     readTime: data.readTime as string,
+    excerpt: (data.excerpt as string) || '',
+    year: (data.date as string).split('-')[0],
+    tags: data.tags || [],
+    headings: extractHeadings(content),
   };
+}
+
+export function getAllPosts(): PostData[] {
+  const groups = getGroupedPosts();
+  return groups.flatMap((g) => g.posts);
+}
+
+export interface TagInfo {
+  tag: string;
+  count: number;
+}
+
+export function getAllTags(): TagInfo[] {
+  const allPosts = getAllPosts();
+
+  const tagMap = new Map<string, number>();
+  for (const post of allPosts) {
+    if (post.tags) {
+      for (const tag of post.tags) {
+        tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+      }
+    }
+  }
+
+  return Array.from(tagMap.entries())
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export function getPostsByTag(tag: string): PostData[] {
+  return getAllPosts().filter((post) => post.tags?.includes(tag));
 }

@@ -3,6 +3,7 @@ title: "图片测试2"
 date: "2026-05-02"
 excerpt: "测试标准Markdown语法图片"
 readTime: "1 min read"
+tags: ["Markdown", "Images"]
 ---
 
 # 图片测试

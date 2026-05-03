@@ -3,6 +3,7 @@ title: "可视化与图表：Mermaid 实战"
 date: "2026-05-01"
 excerpt: "用 Mermaid 绘制流程图、时序图与甘特图的示例集。"
 readTime: "3 min read"
+tags: ["Mermaid", "Visualization"]
 ---
 
 # Mermaid 图表测试

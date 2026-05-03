@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,6 +9,7 @@ import type { PostData } from "@/lib/posts";
 const NAV_LINKS = [
   { href: "/", label: "首页" },
   { href: "/article", label: "文章" },
+  { href: "/about", label: "关于" },
   { href: "/links", label: "友链" },
 ];
 
@@ -24,6 +25,8 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
   const enterTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const navContainerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -57,13 +60,13 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
       className={`
-        w-full h-[50px] flex justify-center sticky top-0 z-[100]
+        w-full h-[50px] flex justify-center sticky top-0 z-[100] relative
         transition-all duration-300 ease-out
         ${megaOpen
-          ? "border-transparent bg-white dark:bg-zinc-950"
+          ? "bg-white dark:bg-zinc-950"
           : isScrolled
-            ? "bg-background/70 backdrop-blur-md border-b border-foreground/10"
-            : "bg-transparent border-transparent"
+            ? "bg-background/70 backdrop-blur-md"
+            : "bg-transparent"
         }
       `}
       style={megaOpen ? { backgroundColor: 'var(--background, var(--bg-color))' } : {}}
@@ -184,6 +187,16 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 进度条轨道：它就是导航栏的底边线 */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-foreground/10 z-50">
+        <motion.div
+          className="h-full bg-terracotta origin-left"
+          style={{ scaleX: scrollYProgress }}
+          animate={{ opacity: megaOpen ? 0 : 1 }}
+          transition={{ duration: 0.2 }}
+        />
+      </div>
     </motion.nav>
   );
 }

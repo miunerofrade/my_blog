@@ -3,6 +3,7 @@ title: "代码与数学：在博客中写技术内容"
 date: "2026-05-01"
 excerpt: "包含代码示例与 LaTeX 公式的实用写法。"
 readTime: "6 min read"
+tags: ["Markdown", "Math", "Code"]
 ---
 
 # 代码与数学公式测试

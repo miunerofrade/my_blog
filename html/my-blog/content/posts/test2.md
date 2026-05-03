@@ -3,6 +3,7 @@ title: "如何用 Next.js 构建极致的极简主义个人网站"
 date: "2026-05-01"
 excerpt: "抛弃繁杂的组件库，探讨平衡与妥协。"
 readTime: "5 min read"
+tags: ["Next.js", "React", "Tutorial"]
 ---
 
 # 一级标题：文档标题

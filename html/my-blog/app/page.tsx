@@ -5,7 +5,7 @@ import NavButton from "@/components/button";
 
 const NAVIGATION_ITEMS = [
   { label: "Read My Blogs", href: "/article" },
-  { label: "About Me", href: "#" },
+  { label: "About Me", href: "/about" },
   { label: "Projects", href: "#" },
 ];
 

@@ -3,6 +3,7 @@ title: "表格与链接深度解析"
 date: "2026-05-01"
 excerpt: "展示表格、对齐与链接的编写技巧。"
 readTime: "4 min read"
+tags: ["Markdown", "Tutorial"]
 ---
 
 # 表格与链接测试

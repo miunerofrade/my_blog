@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import Link from "next/link";
 import { PostData } from "@/lib/posts";
+import PostListItem from "@/components/post-list-item";
 
 interface Props {
   initialData: { year: string; posts: PostData[] }[];
@@ -125,7 +126,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
-                    className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6 z-10" : "flex flex-col gap-8 z-10"}
+                    className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6 z-10" : "flex flex-col z-10"}
                   >
                     {group.posts.map((post) =>
                       viewMode === 'grid' ? (
@@ -169,44 +170,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
                           </div>
                         </Link>
                       ) : (
-                        <Link key={post.slug} href={`/article/${post.slug}`}>
-                          <div className="group relative flex items-start justify-between py-6 transition-colors duration-300">
-                            <span className="w-28 md:w-36 shrink-0 text-sm font-bold tracking-widest text-foreground/40 uppercase mt-1">
-                              {post.date}
-                            </span>
-                            <div className="flex-1 min-w-0 pr-4 md:pr-8 flex flex-col gap-1.5">
-                              <h3 className="text-base md:text-lg font-bold truncate text-foreground group-hover:text-terracotta transition-colors duration-300">
-                                {post.title}
-                              </h3>
-                              <p className="text-sm text-foreground/50 line-clamp-1 md:line-clamp-2 leading-relaxed">
-                                {post.excerpt}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-3 shrink-0 text-sm font-medium text-foreground/40 mt-1">
-                              <span className="transition-transform duration-300 group-hover:-translate-x-1">{post.readTime}</span>
-                              <span className="text-terracotta opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out font-black text-lg">
-                                →
-                              </span>
-                            </div>
-                          {/* --- 动态斜向滑入的底部激活线 --- */}
-                          <svg
-                            className="absolute bottom-0 left-0 w-full h-[2px] -z-10"
-                            viewBox="0 0 100 2"
-                            preserveAspectRatio="none"
-                          >
-                            {/* 背景底线 (静态灰色) */}
-                            <rect x="0" y="1" width="100" height="1" className="fill-foreground/10" />
-                            {/* 激活线 (Terracotta, 初始隐藏在下方) */}
-                            <rect
-                              x="0"
-                              y="1"
-                              width="100"
-                              height="1"
-                              className="fill-terracotta transition-all duration-500 ease-out translate-y-[2px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
-                            />
-                          </svg>
-                          </div>
-                        </Link>
+                        <PostListItem key={post.slug} post={post} />
                       )
                     )}
                   </motion.div>

@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import NavbarServer from "@/components/navbar-server";
 import SiteFooter from "@/components/site-footer";
+import CommandMenu from "@/components/command-menu";
 import { BackgroundGlow, BackgroundGrid } from "@/components/background";
+import { getAllPosts } from "@/lib/posts";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,6 +29,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const posts = getAllPosts().map((p) => ({ title: p.title, slug: p.slug }));
   return (
     <html
       lang="zh-CN" 
@@ -40,6 +43,7 @@ export default function RootLayout({
           <BackgroundGlow />
           <BackgroundGrid />
           <NavbarServer />
+          <CommandMenu posts={posts} />
           <main className="flex-grow">
             {children}
           </main>

@@ -3,6 +3,7 @@ title: "混合内容高级用法"
 date: "2026-05-01"
 excerpt: "脚注、定义列表、HTML 块与转义字符的混合示例。"
 readTime: "5 min read"
+tags: ["Markdown", "Advanced"]
 ---
 # 混合高级测试
 
