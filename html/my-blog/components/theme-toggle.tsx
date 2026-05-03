@@ -8,7 +8,6 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Avoid synchronous state updates inside an effect
     requestAnimationFrame(() => {
       setMounted(true);
     });

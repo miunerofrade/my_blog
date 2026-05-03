@@ -28,7 +28,7 @@ const cardVariants = {
 export default function LinksPage() {
   return (
     <main
-      className="flex min-h-screen flex-col items-center bg-transparent text-foreground"
+      className="flex min-h-screen flex-col items-center bg-transparent text-foreground selection:bg-terracotta selection:text-background"
       style={{ paddingBottom: '3rem' }}
     >
       <div className="w-full max-w-[1080px] px-8 flex flex-col">
@@ -64,10 +64,10 @@ export default function LinksPage() {
               target="_blank"
               rel="noopener noreferrer"
               variants={cardVariants}
-              className="group relative flex flex-col rounded-xl border border-foreground/5 bg-foreground/2 backdrop-blur-md min-h-[160px] md:min-h-[180px] hover:border-terracotta/30 hover:-translate-y-0.5 transition-all duration-300 ease-out"
+              className="group relative flex flex-col rounded-xl bg-foreground/2 backdrop-blur-md border border-foreground/10 shadow-sm hover:border-terracotta/40 hover:-translate-y-1 transition-all duration-300 ease-out"
               style={{ padding: '2rem' }}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-5">
                 <div className="w-14 h-14 rounded-2xl shrink-0 overflow-hidden bg-foreground/10">
                   <img
                     src={link.avatar}
@@ -75,12 +75,12 @@ export default function LinksPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <span className="text-lg font-black tracking-wide text-foreground group-hover:text-terracotta transition-colors duration-300">
+                <span className="text-xl font-black tracking-tight text-foreground group-hover:text-terracotta transition-colors duration-300">
                   {link.name}
                 </span>
               </div>
 
-              <span className="text-sm text-foreground/50 leading-relaxed line-clamp-3 flex-grow" style={{ marginTop: '1.5rem' }}>
+              <span className="text-sm text-foreground/60 leading-relaxed" style={{ marginTop: '1.5rem' }}>
                 {link.desc}
               </span>
 
