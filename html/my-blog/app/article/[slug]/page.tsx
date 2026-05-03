@@ -56,15 +56,15 @@ export default async function PostPage({
   const groups = getGroupedPosts();
   const sortedPosts = groups.flatMap((g) => g.posts);
   const currentIndex = sortedPosts.findIndex((p) => p.slug === slug);
-  const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
-  const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+  const prevPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+  const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
   const otherPosts = sortedPosts.filter((p) => p.slug !== slug).slice(0, 5);
 
   const components = {
-    // 接管标题渲染 —— prose 插件的后代选择器权重高于 Tailwind 原子类，必须加 !important 击穿
-    h1: (props: any) => <h1 className="text-3xl md:text-4xl font-black !mt-20 !mb-10 tracking-tight leading-tight text-foreground" {...props} />,
-    h2: (props: any) => <h2 className="text-2xl md:text-3xl font-bold !mt-16 !mb-8 tracking-tight leading-snug text-foreground" {...props} />,
-    h3: (props: any) => <h3 className="text-xl md:text-2xl font-bold !mt-10 !mb-6 tracking-tight leading-snug text-foreground" {...props} />,
+    // 接管标题渲染 —— prose 权重高且 Tailwind 类可能失效，全部改为内联 style
+    h1: (props: any) => <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-foreground" style={{ marginTop: '2rem', marginBottom: '1rem' }} {...props} />,
+    h2: (props: any) => <h2 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
+    h3: (props: any) => <h3 className="text-xl md:text-2xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.25rem', marginBottom: '0.5rem' }} {...props} />,
     // 拦截原生的 pre，换成我们带一键复制的特制代码块组件
     pre: CodeBlock,
     img: (props: any) => {
@@ -118,14 +118,16 @@ export default async function PostPage({
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-background text-foreground py-20 transition-colors duration-300">
-      <article className="w-full max-w-270 px-8 flex flex-col gap-10">
+    <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground transition-colors duration-300"
+      style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
+      <article className="w-full max-w-270 px-8 flex flex-col" style={{ gap: '1.5rem' }}>
         
         <div>
           <BackButton />
         </div>
 
-        <header className="flex flex-col gap-6 border-b border-foreground/10 pb-10">
+        <header className="flex flex-col border-b border-foreground/10"
+          style={{ gap: '1.25rem', paddingBottom: '1.5rem' }}>
           <div className="flex items-center gap-3 text-sm font-bold tracking-widest text-foreground/40 uppercase">
             <span>{postData.date}</span>
             <span className="w-1.5 h-1.5 rounded-full bg-terracotta/40"></span>
@@ -137,7 +139,7 @@ export default async function PostPage({
         </header>
 
         {/* 优化后的排版，类似 Deepseek：更干净的字体颜色，去除 prose 对代码的强制背景 */}
-        <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none
+        <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none [&>*:first-child]:!mt-0
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground dark:prose-headings:text-foreground
           prose-a:text-terracotta dark:prose-a:text-terracotta 
           prose-p:leading-8 prose-p:text-foreground dark:prose-p:text-foreground
@@ -170,17 +172,21 @@ export default async function PostPage({
         </div>
 
         {/* 底部导航区域，统一管理间距 */}
-        <div className="mt-24 flex flex-col gap-16">
+        <div className="flex flex-col" style={{ marginTop: '2.5rem', gap: '2rem' }}>
 
         {/* 上一篇 / 下一篇 */}
         <div>
           <hr className="border-t border-foreground/10" />
-          <nav className="grid grid-cols-2 gap-4" style={{ marginTop: '2.5rem' }}>
+          <nav className="grid grid-cols-2" style={{ gap: '1rem', marginTop: '1.5rem' }}>
             {prevPost ? (
               <Link href={`/article/${prevPost.slug}`}
-                className="group flex flex-col gap-3 py-6 px-4 border-l-2 border-transparent
-                  hover:border-terracotta hover:bg-foreground/5 transition-all duration-200">
-                <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">← 上一篇</span>
+                className="group flex flex-col transition-colors duration-300"
+                style={{ gap: '0.5rem', paddingTop: '0.75rem', paddingBottom: '0.75rem' }}>
+                <div className="flex items-center text-xs font-bold tracking-widest uppercase text-foreground/30"
+                  style={{ gap: '0.375rem' }}>
+                  <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1">←</span>
+                  <span>上一篇</span>
+                </div>
                 <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
                   transition-colors duration-200 line-clamp-2">
                   {prevPost.title}
@@ -190,9 +196,13 @@ export default async function PostPage({
 
             {nextPost ? (
               <Link href={`/article/${nextPost.slug}`}
-                className="group flex flex-col gap-3 py-6 px-4 border-r-2 border-transparent
-                  hover:border-terracotta hover:bg-foreground/5 transition-all duration-200 text-right">
-                <span className="text-xs font-bold tracking-widest uppercase text-foreground/30">下一篇 →</span>
+                className="group flex flex-col transition-colors duration-300 text-right"
+                style={{ gap: '0.5rem', paddingTop: '0.75rem', paddingBottom: '0.75rem' }}>
+                <div className="flex items-center justify-end text-xs font-bold tracking-widest uppercase text-foreground/30"
+                  style={{ gap: '0.375rem' }}>
+                  <span>下一篇</span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </div>
                 <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
                   transition-colors duration-200 line-clamp-2">
                   {nextPost.title}
@@ -204,26 +214,29 @@ export default async function PostPage({
 
         {/* 更多文章 */}
         {otherPosts.length > 0 && (
-          <div className="border-t border-foreground/10 pt-8">
-            <p className="text-xs font-bold tracking-widest uppercase text-foreground/30 mb-4">
+          <div style={{ marginTop: '1.5rem' }}>
+            <p className="text-xl md:text-2xl font-black tracking-widest uppercase text-foreground/60"
+              style={{ marginBottom: '1.5rem' }}>
               更多文章
             </p>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col" style={{ gap: '0.5rem' }}>
               {otherPosts.map((post) => (
                 <Link key={post.slug} href={`/article/${post.slug}`}
-                  className="group flex items-center justify-between py-4 border-b border-foreground/6
-                    hover:border-foreground/20 transition-colors duration-200">
-                  <span className="text-sm font-medium text-foreground/80 group-hover:text-foreground
+                  className="group flex items-center justify-between border-b border-foreground/6
+                    hover:border-foreground/20 transition-colors duration-200"
+                  style={{ paddingTop: '0.75rem', paddingBottom: '0.75rem' }}>
+                  <span className="text-base font-medium text-foreground/80 group-hover:text-foreground
                     transition-colors duration-200">
                     {post.title}
                   </span>
-                  <span className="text-xs text-foreground/30 shrink-0 ml-4">{post.date}</span>
+                  <span className="text-xs text-foreground/40 shrink-0" style={{ marginLeft: '1rem' }}>{post.date}</span>
                 </Link>
               ))}
             </div>
             <Link href="/article"
-              className="inline-block mt-4 text-xs font-bold tracking-widest uppercase
-                text-terracotta/70 hover:text-terracotta transition-colors duration-200">
+              className="inline-block text-sm font-bold tracking-widest uppercase
+                text-terracotta/70 hover:text-terracotta transition-colors duration-200"
+              style={{ marginTop: '1rem' }}>
               查看全部 →
             </Link>
           </div>
@@ -232,6 +245,7 @@ export default async function PostPage({
         </div>
 
       </article>
+
     </main>
   );
 }

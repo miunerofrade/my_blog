@@ -21,7 +21,8 @@ export default function ArticleClient({ initialData = [] }: Props) {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-background text-foreground pb-32">
+    <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground"
+      style={{ paddingBottom: '3rem' }}>
       <div className="w-full max-w-[1080px] px-8 flex flex-col md:flex-row items-start gap-12 md:gap-20">
         
         {/* 左侧：时间轴侧边栏 */}

@@ -47,7 +47,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
 
   return (
     <motion.nav
-      initial={{ opacity: 0, y: -20 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
       className={`
@@ -105,20 +105,20 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                 {/* Mega menu */}
                 <AnimatePresence>
                   {isArticle && megaOpen && recentPosts.length > 0 && (
-                    <div className="absolute top-[calc(100%+16px)] left-1/2"
-                      style={{ transform: 'translateX(calc(-50% + 12px))' }}>
+                    <div className="absolute top-[calc(100%+1rem)] left-1/2"
+                      style={{ transform: 'translateX(calc(-50% + 0.75rem))' }}>
                       <motion.div
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.18, ease: "easeOut" }}
-                        className="w-[500px] bg-background/95 backdrop-blur-md border border-foreground/10
+                        className="w-[31.25rem] bg-background/95 backdrop-blur-md border border-foreground/10
                           rounded-xl shadow-xl overflow-hidden"
                       >
                         {/* 箭头 */}
                         <div className="absolute -top-1.5 left-1/2 w-3 h-3
                           bg-background/95 border-l border-t border-foreground/10"
-                          style={{ transform: 'translateX(calc(-50% - 12px)) rotate(45deg)' }} />
+                          style={{ transform: 'translateX(calc(-50% - 0.75rem)) rotate(45deg)' }} />
 
                         <div className="p-6" style={{ padding: '1.5rem' }}>
                           <p className="text-xs font-bold tracking-widest uppercase text-foreground/30 mb-4">
