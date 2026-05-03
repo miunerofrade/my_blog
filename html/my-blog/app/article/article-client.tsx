@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function ArticleClient({ initialData = [] }: Props) {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
 
   // 防止初次渲染时因为没有数据而崩溃
   if (!initialData || initialData.length === 0) {
@@ -68,14 +68,14 @@ export default function ArticleClient({ initialData = [] }: Props) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-              style={{ padding: '6px' }}
-              className="mb-4 md:mb-6 flex items-center rounded-xl bg-foreground/5 relative gap-1"
+              className="flex items-center gap-2"
             >
               <button
                 onClick={() => setViewMode('list')}
-                className={`relative z-10 p-2 rounded-lg transition-colors duration-300 ${viewMode === 'list' ? 'text-foreground' : 'text-foreground/30 hover:text-foreground/60'}`}
+                className={`p-2 transition-colors duration-300 ${viewMode === 'list' ? 'text-terracotta' : 'text-foreground/30 hover:text-foreground/70'}`}
+                aria-label="List view"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="8" y1="6" x2="21" y2="6"></line>
                   <line x1="8" y1="12" x2="21" y2="12"></line>
                   <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -83,30 +83,17 @@ export default function ArticleClient({ initialData = [] }: Props) {
                   <line x1="3" y1="12" x2="3.01" y2="12"></line>
                   <line x1="3" y1="18" x2="3.01" y2="18"></line>
                 </svg>
-                {viewMode === 'list' && (
-                  <motion.div 
-                    layoutId="toggle-bg" 
-                    className="absolute inset-0 bg-background rounded-lg -z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-foreground/[0.02]" 
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`relative z-10 p-2 rounded-lg transition-colors duration-300 ${viewMode === 'grid' ? 'text-foreground' : 'text-foreground/30 hover:text-foreground/60'}`}
+                className={`p-2 transition-colors duration-300 ${viewMode === 'grid' ? 'text-terracotta' : 'text-foreground/30 hover:text-foreground/70'}`}
+                aria-label="Grid view"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="3" y1="12" x2="21" y2="12"></line>
                   <line x1="12" y1="3" x2="12" y2="21"></line>
                 </svg>
-                {viewMode === 'grid' && (
-                  <motion.div 
-                    layoutId="toggle-bg" 
-                    className="absolute inset-0 bg-background rounded-lg -z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-foreground/[0.02]" 
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
               </button>
             </motion.div>
           </header>
@@ -140,47 +127,66 @@ export default function ArticleClient({ initialData = [] }: Props) {
                     transition={{ duration: 0.25, ease: "easeOut" }}
                     className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6 z-10" : "flex flex-col gap-8 z-10"}
                   >
-                    {group.posts.map((post) => (
-                      <Link key={post.slug} href={`/article/${post.slug}`}>
-                        <div
-                          style={{ padding: '40px' }}
-                          className="
-                            group relative overflow-hidden cursor-pointer
-                            flex flex-col justify-between h-full
-                            rounded-3xl border border-foreground/5
-                            bg-foreground/2 backdrop-blur-md
-                            hover:bg-foreground/4 hover:border-terracotta/30
-                            hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]
-                            transition-all duration-500 ease-out hover:-translate-y-1.5
-                          "
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-br from-terracotta/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                          <div className="absolute -top-12 -right-12 w-48 h-48 bg-terracotta/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    {group.posts.map((post) =>
+                      viewMode === 'grid' ? (
+                        <Link key={post.slug} href={`/article/${post.slug}`}>
+                          <div
+                            style={{ padding: '40px' }}
+                            className="
+                              group relative overflow-hidden cursor-pointer
+                              flex flex-col justify-between h-full
+                              rounded-3xl border border-foreground/5
+                              bg-foreground/2 backdrop-blur-md
+                              hover:bg-foreground/4 hover:border-terracotta/30
+                              hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]
+                              transition-all duration-500 ease-out hover:-translate-y-1.5
+                            "
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-br from-terracotta/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -top-12 -right-12 w-48 h-48 bg-terracotta/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-                          <div className="relative flex flex-col gap-4">
-                            <div className="flex items-center gap-3 text-xs font-bold tracking-widest text-foreground/40 uppercase">
-                              <span>{post.date}</span>
-                              <span className="w-1.5 h-1.5 rounded-full bg-terracotta/40"></span>
-                              <span>{post.readTime}</span>
+                            <div className="relative flex flex-col gap-4">
+                              <div className="flex items-center gap-3 text-xs font-bold tracking-widest text-foreground/40 uppercase">
+                                <span>{post.date}</span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-terracotta/40"></span>
+                                <span>{post.readTime}</span>
+                              </div>
+
+                              <h3 className="relative font-black leading-tight tracking-tight group-hover:text-terracotta transition-colors duration-300 text-2xl">
+                                {post.title}
+                              </h3>
                             </div>
-                            
-                            <h3 className={`relative font-black leading-tight tracking-tight group-hover:text-terracotta transition-colors duration-300 ${viewMode === 'grid' ? 'text-2xl' : 'text-2xl md:text-3xl'}`}>
+
+                            <div className="relative flex items-end justify-between gap-8 mt-10">
+                              <p className="text-foreground/60 leading-[1.8] font-medium text-sm line-clamp-2 max-w-[85%]">
+                                {post.excerpt}
+                              </p>
+
+                              <span className="text-terracotta opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out font-black text-3xl shrink-0">
+                                →
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      ) : (
+                        <Link key={post.slug} href={`/article/${post.slug}`}>
+                          <div className="group flex items-center justify-between py-5 border-b border-foreground/10 hover:border-foreground/30 transition-colors duration-300">
+                            <span className="w-28 md:w-36 shrink-0 text-sm font-bold tracking-widest text-foreground/40 uppercase">
+                              {post.date}
+                            </span>
+                            <h3 className="flex-1 min-w-0 pr-4 text-base md:text-lg font-bold truncate text-foreground group-hover:text-terracotta transition-colors duration-300">
                               {post.title}
                             </h3>
+                            <div className="flex items-center gap-3 shrink-0 text-sm font-medium text-foreground/40">
+                              <span className="transition-transform duration-300 group-hover:-translate-x-1">{post.readTime}</span>
+                              <span className="text-terracotta opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out font-black text-lg">
+                                →
+                              </span>
+                            </div>
                           </div>
-
-                          <div className={`relative flex items-end justify-between gap-8 ${viewMode === 'grid' ? 'mt-10' : 'mt-1'}`}>
-                            <p className={`text-foreground/60 leading-[1.8] font-medium ${viewMode === 'grid' ? 'text-sm line-clamp-2 max-w-[85%]' : 'text-base md:text-lg max-w-[85%]'}`}>
-                              {post.excerpt}
-                            </p>
-
-                            <span className="text-terracotta opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out font-black text-3xl shrink-0">
-                              →
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      )
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </motion.section>
