@@ -43,6 +43,21 @@ const preProcessMermaid = () => (tree: Record<string, unknown>) => {
   });
 };
 
+const copyDataLanguageToFigure = () => (tree: Record<string, unknown>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  visit(tree, 'element', (node: any) => {
+    if (
+      node.tagName === 'figure' &&
+      node.properties?.['data-rehype-pretty-code-figure'] !== undefined
+    ) {
+      const pre = node.children?.find((c: any) => c.tagName === 'pre');
+      if (pre?.properties?.['data-language']) {
+        node.properties['data-language'] = pre.properties['data-language'];
+      }
+    }
+  });
+};
+
 const rehypeAddIds = () => (tree: Record<string, unknown>) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   visit(tree, 'element', (node: any) => {
@@ -205,7 +220,8 @@ export default async function PostPage({
                     [rehypePrettyCode, {
                       theme: { light: "github-light", dark: "github-dark" },
                       keepBackground: true
-                    }]
+                    }],
+                    copyDataLanguageToFigure
                   ],
                 }
               }}

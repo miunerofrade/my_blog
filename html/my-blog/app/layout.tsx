@@ -4,6 +4,8 @@ import { Providers } from "./providers";
 import NavbarServer from "@/components/navbar-server";
 import SiteFooter from "@/components/site-footer";
 import CommandMenu from "@/components/command-menu";
+import BackToTop from "@/components/back-to-top";
+import PageTransition from "@/components/page-transition";
 import { getAllPosts } from "@/lib/posts";
 import "./globals.css";
 
@@ -19,8 +21,8 @@ const geistMono = Geist_Mono({
 
 
 export const metadata: Metadata = {
-  title: "Miunerofrade - 记录技术、设计与思考",
-  description: "Miunerofrade 的个人博客，记录技术、设计与思考。",
+  title: "Miunerofrade's Blog",
+  description: "Miunerofrade 的个人博客。",
 };
 
 export default function RootLayout({
@@ -42,9 +44,12 @@ export default function RootLayout({
           <NavbarServer />
           <CommandMenu posts={posts} />
           <main className="flex-grow">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </main>
           <SiteFooter />
+          <BackToTop />
         </Providers>
       </body>
     </html>

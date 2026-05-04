@@ -7,7 +7,7 @@ import { BackgroundGlow, BackgroundGrid } from "@/components/background";
 const NAVIGATION_ITEMS = [
   { label: "Read My Blogs", href: "/article" },
   { label: "About Me", href: "/about" },
-  { label: "Projects", href: "#" },
+  { label: "Projects", href: "https://github.com/miunerofrade?tab=repositories" },
 ];
 
 export default function Home() {

@@ -36,6 +36,10 @@ export default function SiteFooter() {
           QQ
         </span>
       </div>
+      <div className="flex flex-col items-center" style={{ gap: '0.25rem' }}>
+        <p className="text-xs text-foreground/30" style={{ margin: 0 }}>© 2026 Miunerofrade. All Rights Reserved.</p>
+        <p className="text-xs text-foreground/30" style={{ margin: 0 }}>Built with Next.js. Powered by Miunerofrade.</p>
+      </div>
     </footer>
   );
 }

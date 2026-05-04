@@ -45,7 +45,24 @@ html.dark span[data-line] span {
 
 figure[data-rehype-pretty-code-figure] {
   margin: 0;
+  position: relative;
 }
+
+figure[data-rehype-pretty-code-figure]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.8rem;
+  right: 3.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  color: var(--color-foreground);
+  opacity: 0.25;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  z-index: 1;
+}
+
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
