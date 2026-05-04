@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence, useScroll } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,8 +25,6 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
   const enterTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const navContainerRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -61,6 +59,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       transition={{ duration: 0.5, ease: "easeInOut" }}
       className={`
         w-full h-[50px] flex justify-center sticky top-0 z-[100] relative
+        border-b border-foreground/10
         transition-all duration-300 ease-out
         ${megaOpen
           ? "bg-white dark:bg-zinc-950"
@@ -83,7 +82,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
         {/* Nav links */}
         <div
           ref={navContainerRef}
-          className="flex-1 flex justify-center gap-12 relative text-base font-bold tracking-widest uppercase"
+          className="flex-1 h-full flex items-center justify-center gap-12 relative text-base font-bold tracking-widest uppercase"
         >
           {NAV_LINKS.map((link) => {
             const isActive =
@@ -118,7 +117,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
             initial={false}
             animate={indicatorStyle}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            className="absolute bottom-0 h-[2px] bg-terracotta rounded-full pointer-events-none"
+            className="absolute bottom-[-1px] h-[2px] bg-terracotta rounded-full pointer-events-none"
           />
         </div>
 
@@ -188,15 +187,6 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
         )}
       </AnimatePresence>
 
-      {/* 进度条轨道：它就是导航栏的底边线 */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-foreground/10 z-50">
-        <motion.div
-          className="h-full bg-terracotta origin-left"
-          style={{ scaleX: scrollYProgress }}
-          animate={{ opacity: megaOpen ? 0 : 1 }}
-          transition={{ duration: 0.2 }}
-        />
-      </div>
     </motion.nav>
   );
 }
