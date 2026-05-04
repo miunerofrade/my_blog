@@ -1,6 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { z } from 'zod';
+
+const PostSchema = z.object({
+  title: z.string(),
+  date: z.string(),
+  excerpt: z.string(),
+  readTime: z.string().optional(),
+  tags: z.array(z.string()).optional().default([]),
+});
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
@@ -9,7 +18,7 @@ export interface PostData {
   title: string;
   date: string;
   excerpt: string;
-  readTime: string;
+  readTime?: string;
   year: string;
   tags?: string[];
 }
@@ -54,17 +63,13 @@ export function getGroupedPosts(): { year: string; posts: PostData[] }[] {
 
       // 解析 Markdown 头部的元数据
       const { data } = matter(fileContents);
-      const date = data.date as string;
-      const year = date.split('-')[0]; // 提取年份用于分组
+      const parsed = PostSchema.parse(data);
+      const year = parsed.date.split('-')[0];
 
       return {
         slug,
         year,
-        title: data.title,
-        date: data.date,
-        excerpt: data.excerpt,
-        readTime: data.readTime,
-        tags: data.tags || [],
+        ...parsed,
       } as PostData;
     });
 
@@ -107,16 +112,13 @@ export function getPostData(slug: string): PostDataWithContent {
   
   // matter 会把头部数据放在 data 里，把 Markdown 正文放在 content 里
   const { data, content } = matter(fileContents);
+  const parsed = PostSchema.parse(data);
 
   return {
     slug,
     content,
-    title: data.title as string,
-    date: data.date as string,
-    readTime: data.readTime as string,
-    excerpt: (data.excerpt as string) || '',
-    year: (data.date as string).split('-')[0],
-    tags: data.tags || [],
+    ...parsed,
+    year: parsed.date.split('-')[0],
     headings: extractHeadings(content),
   };
 }

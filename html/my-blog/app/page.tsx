@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import NavButton from "@/components/button";
+import { BackgroundGlow, BackgroundGrid } from "@/components/background";
 
 const NAVIGATION_ITEMS = [
   { label: "Read My Blogs", href: "/article" },
@@ -12,6 +13,8 @@ const NAVIGATION_ITEMS = [
 export default function Home() {
   return (
     <main className="relative z-10 min-h-[calc(100vh-50px)] bg-transparent text-foreground selection:bg-terracotta selection:text-background flex flex-col items-center p-6 md:p-12 text-center">
+      <BackgroundGlow />
+      <BackgroundGrid />
       <div className="w-full max-w-[1080px] flex flex-col items-center">
         
         <motion.div 

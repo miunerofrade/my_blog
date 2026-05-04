@@ -1,4 +1,5 @@
 import { getPostData, getAllPostSlugs, getGroupedPosts } from "@/lib/posts";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkMath from "remark-math";
@@ -56,6 +57,21 @@ const rehypeAddIds = () => (tree: Record<string, unknown>) => {
     }
   });
 };
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const postData = getPostData(slug);
+
+  return {
+    title: `${postData.title} | Miunerofrade`,
+    description: postData.excerpt,
+    keywords: postData.tags?.join(', '),
+  };
+}
 
 export default async function PostPage({
   params
