@@ -13,6 +13,7 @@ import { BackButton } from "@/components/back-button";
 import { Spacer } from "@/components/spacer";
 import { remarkImgAttrs } from "@/lib/remark-img-attrs";
 import ArticleLayout from "@/components/article-layout";
+import ReadingProgress from "@/components/reading-progress";
 
 export async function generateStaticParams() {
   const posts = getAllPostSlugs();
@@ -160,7 +161,8 @@ export default async function PostPage({
             )}
           </header>
 
-          <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none [&>*:first-child]:!mt-0
+          <ReadingProgress>
+            <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none [&>*:first-child]:!mt-0
             prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground dark:prose-headings:text-foreground
             prose-a:text-terracotta dark:prose-a:text-terracotta
             prose-p:leading-8 prose-p:text-foreground dark:prose-p:text-foreground
@@ -192,6 +194,7 @@ export default async function PostPage({
               }}
             />
           </div>
+          </ReadingProgress>
 
           <div className="flex flex-col" style={{ marginTop: '2.5rem', gap: '2rem' }}>
 
