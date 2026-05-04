@@ -163,7 +163,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
                                 {post.excerpt}
                               </p>
 
-                              <span className="text-terracotta opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out font-black text-3xl shrink-0">
+                              <span className="text-terracotta opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out font-black text-3xl shrink-0" aria-hidden="true">
                                 →
                               </span>
                             </div>

@@ -24,15 +24,15 @@ export default function SiteFooter() {
       style={{ gap: '1rem', paddingTop: '1.5rem', paddingBottom: '1.5rem' }}>
       <div className="flex items-center" style={{ gap: '1.5rem' }}>
         <a href="https://github.com/miunerofrade" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-terracotta transition-colors duration-200">
-          <GitHubIcon />
+          <span aria-hidden="true"><GitHubIcon /></span>
           GitHub
         </a>
-        <span title="复制邮箱地址" className="inline-flex items-center gap-1.5 cursor-pointer hover:text-terracotta transition-colors duration-200" onClick={() => { try { navigator.clipboard.writeText('miunerofrade@gmail.com'); } catch {} }}>
-          <GmailIcon />
+        <span title="复制邮箱地址" tabIndex={0} role="button" className="inline-flex items-center gap-1.5 cursor-pointer hover:text-terracotta transition-colors duration-200" onClick={() => { try { navigator.clipboard.writeText('miunerofrade@gmail.com'); } catch {} }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); try { navigator.clipboard.writeText('miunerofrade@gmail.com'); } catch {} } }}>
+          <span aria-hidden="true"><GmailIcon /></span>
           Gmail
         </span>
-        <span title="复制 QQ 号" className="inline-flex items-center gap-1.5 cursor-pointer hover:text-terracotta transition-colors duration-200" onClick={() => { try { navigator.clipboard.writeText('2822425981'); } catch {} }}>
-          <QQIcon />
+        <span title="复制 QQ 号" tabIndex={0} role="button" className="inline-flex items-center gap-1.5 cursor-pointer hover:text-terracotta transition-colors duration-200" onClick={() => { try { navigator.clipboard.writeText('2822425981'); } catch {} }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); try { navigator.clipboard.writeText('2822425981'); } catch {} } }}>
+          <span aria-hidden="true"><QQIcon /></span>
           QQ
         </span>
       </div>

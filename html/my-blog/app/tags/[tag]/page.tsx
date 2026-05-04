@@ -29,7 +29,7 @@ export default async function TagPage({
             href="/article"
             className="inline-block text-xs font-bold tracking-widest uppercase text-foreground/40 hover:text-terracotta transition-colors duration-200 mb-4"
           >
-            ← 所有文章
+            <span aria-hidden="true">←</span> 所有文章
           </Link>
           <h1 className="text-[clamp(2rem,4.5vw,4.5rem)] font-black tracking-tighter uppercase">
             <span className="text-terracotta">#</span>{tag}

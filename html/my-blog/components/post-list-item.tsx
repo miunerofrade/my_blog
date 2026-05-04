@@ -3,7 +3,7 @@ import type { PostData } from "@/lib/posts";
 
 export default function PostListItem({ post }: { post: PostData }) {
   return (
-    <Link href={`/article/${post.slug}`}>
+    <Link href={`/article/${post.slug}`} className="">
       <div
         className="group relative flex items-start justify-between transition-colors duration-300"
         style={{ paddingTop: '0.5rem', paddingBottom: '1rem' }}
@@ -21,7 +21,7 @@ export default function PostListItem({ post }: { post: PostData }) {
         </div>
         <div className="flex items-center gap-3 shrink-0 text-sm font-medium text-foreground/40 mt-1">
           <span className="transition-transform duration-300 group-hover:-translate-x-1">{post.readTime}</span>
-          <span className="text-terracotta opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out font-black text-lg">
+          <span className="text-terracotta opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out font-black text-lg" aria-hidden="true">
             →
           </span>
         </div>
@@ -29,6 +29,7 @@ export default function PostListItem({ post }: { post: PostData }) {
           className="absolute bottom-0 left-0 w-full h-[2px] -z-10"
           viewBox="0 0 100 2"
           preserveAspectRatio="none"
+          aria-hidden="true"
         >
           <rect x="0" y="1" width="100" height="1" className="fill-foreground/10" />
           <rect

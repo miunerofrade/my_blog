@@ -14,6 +14,7 @@ import { Spacer } from "@/components/spacer";
 import { remarkImgAttrs } from "@/lib/remark-img-attrs";
 import ArticleLayout from "@/components/article-layout";
 import ReadingProgress from "@/components/reading-progress";
+import ImageZoom from "@/components/image-zoom";
 
 export async function generateStaticParams() {
   const posts = getAllPostSlugs();
@@ -105,7 +106,7 @@ export default async function PostPage({
       };
 
       return (
-        <img
+        <ImageZoom
           src={src}
           alt={alt}
           title={displayTitle}
@@ -207,7 +208,7 @@ export default async function PostPage({
                   style={{ gap: '0.5rem', paddingTop: '0.75rem', paddingBottom: '0.75rem' }}>
                   <div className="flex items-center text-xs font-bold tracking-widest uppercase text-foreground/30"
                     style={{ gap: '0.375rem' }}>
-                    <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1">←</span>
+                    <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1" aria-hidden="true">←</span>
                     <span>上一篇</span>
                   </div>
                   <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
@@ -224,7 +225,7 @@ export default async function PostPage({
                   <div className="flex items-center justify-end text-xs font-bold tracking-widest uppercase text-foreground/30"
                     style={{ gap: '0.375rem' }}>
                     <span>下一篇</span>
-                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
                   </div>
                   <span className="text-sm font-semibold text-foreground group-hover:text-terracotta
                     transition-colors duration-200 line-clamp-2">
@@ -259,7 +260,7 @@ export default async function PostPage({
                 className="inline-block text-sm font-bold tracking-widest uppercase
                   text-terracotta/70 hover:text-terracotta transition-colors duration-200"
                 style={{ marginTop: '1rem' }}>
-                查看全部 →
+                查看全部 <span aria-hidden="true">→</span>
               </Link>
             </div>
           )}
