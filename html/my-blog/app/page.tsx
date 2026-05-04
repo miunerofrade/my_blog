@@ -25,11 +25,11 @@ export default function Home() {
           className="flex flex-col items-center gap-[3vh] w-full"
         >
 
-          <h1 className="relative left-[0.2ch] text-[clamp(3.5rem,8vw,8rem)] font-black tracking-tighter leading-none uppercase max-w-5xl mx-auto">
+          <h1 className="relative left-[0.2ch] text-[clamp(3.5rem,8vw,8rem)] font-bold tracking-tighter leading-none uppercase max-w-5xl mx-auto font-playfair">
             Welcome<span className="text-terracotta">.</span>
           </h1>
-          
-          <p className="relative left-[0.5em] text-[clamp(1.125rem,2.5vw,1.5rem)] font-medium opacity-80 leading-loose max-w-2xl font-sans">
+
+          <p className="relative left-[0.5em] text-[clamp(1.125rem,2.5vw,1.5rem)] font-normal opacity-80 leading-loose max-w-2xl font-noto-serif-sc">
             欢迎。
           </p>
 

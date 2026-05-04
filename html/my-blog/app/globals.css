@@ -74,6 +74,10 @@ code {
 
   --color-background: var(--bg-color);
   --color-foreground: var(--text-color);
+
+  --font-playfair: "Playfair Display", serif;
+  --font-noto-serif-sc: "Noto Serif SC", serif;
+  --font-serif: var(--font-noto-serif-sc);
 }
 :root {
   --bg-color: var(--color-pampas);

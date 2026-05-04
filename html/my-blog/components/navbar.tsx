@@ -72,14 +72,12 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
     >
       <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-6">
 
-        {/* Logo */}
         <div className="flex-1 flex justify-start">
-          <Link href="/" className="text-xl font-black tracking-tighter text-foreground">
+          <Link href="/" className="text-xl font-black tracking-[-0.5px] text-foreground">
             Miunerofrade
           </Link>
         </div>
 
-        {/* Nav links */}
         <div
           ref={navContainerRef}
           className="flex-1 h-full flex items-center justify-center gap-12 relative text-base font-bold tracking-widest uppercase"
@@ -112,7 +110,6 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
             );
           })}
 
-          {/* 底部滑动指示器，仅水平方向动画 */}
           <motion.div
             initial={false}
             animate={indicatorStyle}
@@ -121,13 +118,11 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           />
         </div>
 
-        {/* Theme toggle */}
         <div className="flex-1 flex justify-end">
           <ThemeToggle />
         </div>
       </div>
 
-      {/* --- 无缝托盘 (Seamless Tray) --- */}
       <AnimatePresence>
         {megaOpen && recentPosts.length > 0 && (
           <motion.div
@@ -151,7 +146,6 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.15, ease: "easeOut" }}
             >
-              {/* 左侧 Sidebar */}
               <div style={{ width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <span className="text-xs font-black tracking-widest text-foreground/40 uppercase">
                   LATEST ARTICLES
@@ -164,7 +158,6 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                 </Link>
               </div>
 
-              {/* 右侧 Grid */}
               <div style={{ flexGrow: 1, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '3rem' }}>
                 {recentPosts.slice(0, 3).map((post) => (
                   <Link
