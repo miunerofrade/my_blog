@@ -33,10 +33,12 @@ export function CodeBlock({ children, className, ...props }: any) {
 
   return (
     <div
-      className="group my-8 squircle apple-border-inset apple-shadow-sm"
+      className="group my-8 shadow-sm"
       style={{
         position: "relative",
-        border: "1px solid rgba(128, 128, 128, 0.15)",
+        borderRadius: "0.5rem",
+        overflow: "hidden",
+        border: "1px solid rgba(128, 128, 128, 0.2)",
         marginTop: "2rem",
         marginBottom: "2rem",
       }}

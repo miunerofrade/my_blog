@@ -24,7 +24,7 @@ export default function NavButton({
     transition-all duration-300 ease-out
     ${isPrimary
       ? "border-terracotta text-terracotta bg-terracotta/5 shadow-[0_0_20px_-5px_rgba(217,119,87,0.4)]"
-      : "bg-transparent border-foreground/30 text-foreground hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5 apple-border-inset"
+      : "bg-transparent border-foreground/30 text-foreground hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5"
     }
   `;
 

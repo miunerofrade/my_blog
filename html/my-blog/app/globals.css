@@ -79,45 +79,11 @@ code {
   --bg-color: var(--color-pampas);
   --text-color: var(--color-ink);
   --dot-color: #1d1d1f;
-  --apple-inset-border: inset 0 0 0 0.5px rgba(0,0,0,0.08);
-  --apple-shadow-sm: drop-shadow(0 1px 2px rgba(0,0,0,0.04));
-  --apple-shadow-md: drop-shadow(0 4px 12px rgba(0,0,0,0.04)) drop-shadow(0 2px 4px rgba(0,0,0,0.02));
-  --apple-shadow-lg: drop-shadow(0 8px 28px rgba(0,0,0,0.06)) drop-shadow(0 2px 4px rgba(0,0,0,0.03));
 }
-
 .dark {
   --bg-color: black;
   --text-color: var(--color-pampas);
   --dot-color: #F6F6F2;
-  --apple-inset-border: inset 0 0 0 0.5px rgba(255,255,255,0.08);
-  --apple-shadow-sm: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
-  --apple-shadow-md: drop-shadow(0 4px 12px rgba(0,0,0,0.15)) drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-  --apple-shadow-lg: drop-shadow(0 8px 28px rgba(0,0,0,0.2)) drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-}
-
-.squircle {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 0 C65 0 78 2 86 8 C94 15 97 25 99 38 C100 48 100 52 99 62 C97 75 94 85 86 92 C78 98 65 100 50 100 C35 100 22 98 14 92 C6 85 3 75 1 62 C0 52 0 48 1 38 C3 25 6 15 14 8 C22 2 35 0 50 0 Z'/%3E%3C/svg%3E");
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 0 C65 0 78 2 86 8 C94 15 97 25 99 38 C100 48 100 52 99 62 C97 75 94 85 86 92 C78 98 65 100 50 100 C35 100 22 98 14 92 C6 85 3 75 1 62 C0 52 0 48 1 38 C3 25 6 15 14 8 C22 2 35 0 50 0 Z'/%3E%3C/svg%3E");
-  -webkit-mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-}
-
-.apple-border-inset {
-  box-shadow: var(--apple-inset-border);
-}
-
-.apple-shadow-sm {
-  filter: var(--apple-shadow-sm);
-}
-
-.apple-shadow-md {
-  filter: var(--apple-shadow-md);
-}
-
-.apple-shadow-lg {
-  filter: var(--apple-shadow-lg) drop-shadow(0 8px 30px rgba(0,0,0,0.08));
 }
 * {
   margin: 0;
