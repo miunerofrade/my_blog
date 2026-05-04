@@ -1,14 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const LINKS_DATA = [
-  { name: "John Doe", desc: "A frontend developer crafting beautiful UIs.", url: "https://example.com", avatar: "https://github.com/shadcn.png" },
-  { name: "Jane Smith", desc: "Design engineer exploring interactive design.", url: "https://example.com", avatar: "https://github.com/shadcn.png" },
-  { name: "Alex Chen", desc: "Full-stack developer & open source enthusiast.", url: "https://example.com", avatar: "https://github.com/shadcn.png" },
-  { name: "Mia Johnson", desc: "Writer, thinker, and indie hacker.", url: "https://example.com", avatar: "https://github.com/shadcn.png" },
-  { name: "Lucas Wang", desc: "Building cool stuff with Rust & WebAssembly.", url: "https://example.com", avatar: "https://github.com/shadcn.png" },
-  { name: "Sophia Kim", desc: "UI/UX designer with a passion for typography.", url: "https://example.com", avatar: "https://github.com/shadcn.png" },
+  { name: "John Doe", desc: "A frontend developer crafting beautiful UIs.", url: "https://example.com" },
+  { name: "Jane Smith", desc: "Design engineer exploring interactive design.", url: "https://jane.design" },
+  { name: "Alex Chen", desc: "Full-stack developer & open source enthusiast.", url: "https://github.com" },
+  { name: "Mia Johnson", desc: "Writer, thinker, and indie hacker.", url: "https://medium.com" },
+  { name: "Lucas Wang", desc: "Building cool stuff with Rust & WebAssembly.", url: "https://rust-lang.org" },
+  { name: "Sophia Kim", desc: "UI/UX designer with a passion for typography.", url: "https://dribbble.com" },
+  { name: "哔哩哔哩", desc: "中国年轻世代高度聚集的文化社区和视频平台。", url: "https://www.bilibili.com" },
 ];
 
 const containerVariants = {
@@ -24,6 +26,30 @@ const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
 };
+
+function FaviconImg({ url, name }: { url: string; name: string }) {
+  const [failed, setFailed] = useState(false);
+  const domain = url ? new URL(url).hostname : "";
+
+  if (failed) {
+    return (
+      <div className="w-14 h-14 rounded-2xl shrink-0 bg-foreground/10 flex items-center justify-center text-xl font-black text-foreground/40 select-none">
+        {name.charAt(0)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-14 h-14 rounded-2xl shrink-0 overflow-hidden bg-white dark:bg-zinc-900">
+      <img
+        src={`https://icon.horse/icon/${domain}`}
+        alt={`${name}'s icon`}
+        className="w-full h-full object-cover"
+        onError={() => setFailed(true)}
+      />
+    </div>
+  );
+}
 
 export default function LinksPage() {
   return (
@@ -68,13 +94,7 @@ export default function LinksPage() {
               style={{ padding: '2rem' }}
             >
               <div className="flex items-center gap-5">
-                <div className="w-14 h-14 rounded-2xl shrink-0 overflow-hidden bg-foreground/10">
-                  <img
-                    src={link.avatar}
-                    alt={`${link.name}'s avatar`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
+                <FaviconImg url={link.url} name={link.name} />
                 <span className="text-xl font-black tracking-tight text-foreground group-hover:text-terracotta transition-colors duration-300">
                   {link.name}
                 </span>
