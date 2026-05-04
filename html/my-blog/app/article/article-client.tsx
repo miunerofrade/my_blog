@@ -134,12 +134,11 @@ export default function ArticleClient({ initialData = [] }: Props) {
                           <div
                             style={{ padding: '40px' }}
                             className="
-                              group relative overflow-hidden cursor-pointer
+                              group relative cursor-pointer
                               flex flex-col justify-between h-full
-                              rounded-3xl border border-foreground/5
+                              squircle apple-border-inset apple-shadow-md
                               bg-foreground/2 backdrop-blur-md
-                              hover:bg-foreground/4 hover:border-terracotta/30
-                              hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]
+                              hover:bg-foreground/4
                               transition-all duration-500 ease-out hover:-translate-y-1.5
                             "
                           >
