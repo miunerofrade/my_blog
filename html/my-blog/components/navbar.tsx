@@ -191,7 +191,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
 
       {/* 全局阅读进度条：作为绝对定位元素贴在导航栏底部 */}
       <motion.div
-        className="absolute bottom-[-1px] left-0 right-0 h-[1.5px] bg-terracotta/50 origin-left pointer-events-none z-[110]"
+        className="absolute top-0 left-0 right-0 h-[2.5px] bg-terracotta/60 origin-left pointer-events-none z-[110]"
         style={{ scaleX: scrollYProgress }}
         animate={{ opacity: megaOpen ? 0 : 1 }}
         transition={{ duration: 0.2 }}
