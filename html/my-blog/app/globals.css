@@ -30,7 +30,7 @@ html span[data-line] span {
 
 html pre {
   padding: 1rem !important;
-  border-radius: 0.5rem !important;
+  border-radius: 1rem !important;
 }
 
 html.dark code,

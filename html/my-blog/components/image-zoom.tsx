@@ -15,7 +15,7 @@ export default function ImageZoom({ src, alt, title, style, ...props }: any) {
         style={style}
         {...props}
         onClick={() => setIsZoomed(true)}
-        className="cursor-zoom-in rounded-md transition-shadow hover:shadow-md"
+        className="cursor-zoom-in rounded-xl transition-shadow hover:shadow-md"
       />
       <AnimatePresence>
         {isZoomed && (
@@ -33,7 +33,7 @@ export default function ImageZoom({ src, alt, title, style, ...props }: any) {
               layoutId={`zoom-${src}`}
               src={src}
               alt={alt}
-              className="relative z-10 max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl"
+              className="relative z-10 max-w-[90vw] max-h-[90vh] object-contain rounded-2xl shadow-2xl"
             />
           </span>
         )}

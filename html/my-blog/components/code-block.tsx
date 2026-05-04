@@ -20,7 +20,7 @@ export function CodeBlock({ children, className, ...props }: any) {
     top: "0.5rem",
     right: "0.5rem",
     padding: "0.4rem",
-    borderRadius: "0.375rem",
+    borderRadius: "0.5rem",
     backgroundColor: "var(--color-background)",
     color: "var(--color-foreground)",
     border: "1px solid rgba(150, 150, 150, 0.2)",
@@ -36,9 +36,9 @@ export function CodeBlock({ children, className, ...props }: any) {
       className="group my-8 shadow-sm"
       style={{
         position: "relative",
-        borderRadius: "0.5rem",
+        borderRadius: "1rem",
         overflow: "hidden",
-        border: "1px solid rgba(128, 128, 128, 0.2)",
+        border: "1px solid rgba(128, 128, 128, 0.12)",
         marginTop: "2rem",
         marginBottom: "2rem",
       }}

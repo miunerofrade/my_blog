@@ -45,7 +45,7 @@ export default function CommandMenu({ posts }: { posts: PostEntry[] }) {
         open={open}
         onOpenChange={setOpen}
         label="搜索文章"
-        className="fixed top-[18%] left-1/2 -translate-x-1/2 w-full max-w-xl z-[201] border border-foreground/10 shadow-2xl rounded-xl bg-background overflow-hidden"
+        className="fixed top-[18%] left-1/2 -translate-x-1/2 w-full max-w-xl z-[201] border border-foreground/10 shadow-2xl rounded-2xl bg-background overflow-hidden"
       >
         <Dialog.Title className="sr-only">搜索文章</Dialog.Title>
         <Command.Input

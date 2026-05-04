@@ -136,7 +136,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
                             className="
                               group relative overflow-hidden cursor-pointer
                               flex flex-col justify-between h-full
-                              rounded-3xl border border-foreground/5
+                              rounded-2xl border border-foreground/5
                               bg-foreground/2 backdrop-blur-md
                               hover:bg-foreground/4 hover:border-terracotta/30
                               hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]

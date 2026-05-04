@@ -105,7 +105,7 @@ export default function LinksPage() {
               target="_blank"
               rel="noopener noreferrer"
               variants={cardVariants}
-              className="group relative flex flex-col rounded-xl bg-foreground/2 backdrop-blur-md border border-foreground/10 shadow-sm hover:border-terracotta/40 hover:-translate-y-1 transition-all duration-300 ease-out"
+              className="group relative flex flex-col rounded-2xl bg-foreground/2 backdrop-blur-md border border-foreground/10 shadow-sm hover:border-terracotta/40 hover:-translate-y-1 transition-all duration-300 ease-out"
               style={{ padding: '2rem' }}
             >
               <div className="flex items-center gap-5">
