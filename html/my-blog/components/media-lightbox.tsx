@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function MediaLightbox({
@@ -27,11 +27,18 @@ export default function MediaLightbox({
     onClose();
   }, [onClose]);
 
-  const handleWheel = (event: WheelEvent<HTMLSpanElement>) => {
+  const handleWheel = useCallback((event: globalThis.WheelEvent) => {
     if (!event.ctrlKey) return;
     event.preventDefault();
-    setScale((current) => clampScale(current - event.deltaY * 0.01));
-  };
+    // Use the wheel direction instead of raw delta; device deltas vary widely.
+    setScale((current) => clampScale(current - Math.sign(event.deltaY) * 0.1));
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    document.addEventListener("wheel", handleWheel, { capture: true, passive: false });
+    return () => document.removeEventListener("wheel", handleWheel, true);
+  }, [isOpen, handleWheel]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLSpanElement>) => {
     pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -85,7 +92,6 @@ export default function MediaLightbox({
           aria-label={label}
           className="fixed inset-0 z-[300] flex cursor-zoom-out items-center justify-center"
           onClick={close}
-          onWheel={handleWheel}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
