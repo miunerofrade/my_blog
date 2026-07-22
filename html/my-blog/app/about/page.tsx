@@ -14,7 +14,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[clamp(2rem,4.5vw,4.5rem)] md:text-[clamp(2.5rem,3vw,5rem)] font-black tracking-tighter uppercase"
+            className="font-playfair text-[clamp(2rem,4.5vw,4.5rem)] md:text-[clamp(2.5rem,3vw,5rem)] font-bold tracking-normal uppercase"
           >
             About<span className="text-terracotta">.</span>
           </motion.h1>
@@ -32,12 +32,12 @@ export default function AboutPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
-          className="prose prose-lg dark:prose-invert prose-neutral max-w-none
+          className="about-content prose prose-lg dark:prose-invert prose-neutral max-w-none
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
           prose-a:text-terracotta
           prose-p:leading-8 prose-p:text-foreground dark:prose-p:text-foreground
           prose-strong:text-foreground
-          prose-ul:list-inside prose-ul:pl-5 prose-li:my-0.5 prose-li:text-foreground"
+          prose-ul:list-inside prose-ul:pl-5 prose-li:text-foreground"
           style={{ marginTop: '1rem' }}
         >
           <p>你好，我是 Miunerofrade，一个热爱技术和设计的开发者。</p>

@@ -53,7 +53,7 @@ export default function RootLayout({
         <Providers>
           <NavbarServer />
           <CommandMenu posts={posts} />
-          <main className="flex-grow">
+          <main className="w-full min-w-0 flex-grow">
             <PageTransition>
               {children}
             </PageTransition>

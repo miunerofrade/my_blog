@@ -10,22 +10,26 @@
   }
 }
 
-html code,
-html pre {
+html pre,
+html pre code {
   color: var(--shiki-light);
   background-color: var(--shiki-light-bg) !important;
 }
 
-html span[data-line] span {
+html pre span[data-line] span {
   color: var(--shiki-light);
 }
 
 :not(pre) > code {
-  background-color: var(--color-foreground) !important;
-  color: var(--color-background) !important;
-  opacity: 0.8;
-  padding: 0.15rem 0.3rem;
+  background-color: color-mix(in srgb, var(--color-terracotta) 12%, transparent) !important;
+  color: color-mix(in srgb, var(--color-terracotta) 82%, var(--text-color)) !important;
+  border: 1px solid color-mix(in srgb, var(--color-terracotta) 22%, transparent);
+  padding: 0.12rem 0.32rem;
   border-radius: 0.25rem;
+  font-size: 0.9em;
+  font-weight: 600;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 html pre {
@@ -33,13 +37,13 @@ html pre {
   border-radius: 1rem !important;
 }
 
-html.dark code,
-html.dark pre {
+html.dark pre,
+html.dark pre code {
   color: var(--shiki-dark);
   background-color: var(--shiki-dark-bg) !important;
 }
 
-html.dark span[data-line] span {
+html.dark pre span[data-line] span {
   color: var(--shiki-dark);
 }
 
@@ -83,11 +87,17 @@ code {
   --bg-color: var(--color-pampas);
   --text-color: var(--color-ink);
   --dot-color: #1d1d1f;
+  --surface-color: #ffffff;
+  --surface-hover-color: #fafaf8;
+  --border-color: rgb(29 29 31 / 12%);
 }
 .dark {
-  --bg-color: black;
-  --text-color: var(--color-pampas);
-  --dot-color: #F6F6F2;
+  --bg-color: #282c34;
+  --text-color: #abb2bf;
+  --dot-color: #5c6370;
+  --surface-color: #21252b;
+  --surface-hover-color: #2c313a;
+  --border-color: #3e4451;
 }
 * {
   margin: 0;
@@ -104,6 +114,44 @@ body {
   background: var(--bg-color);
   color: var(--text-color);
   font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.github-repository-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-terracotta) 65%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+
+.github-repository-card:hover::after {
+  opacity: 1;
+}
+
+.about-content > p {
+  margin-top: 0;
+  margin-bottom: 3rem;
+  line-height: 2.1;
+}
+
+.about-content > h2 {
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  line-height: 1.35;
+}
+
+.about-content > ul {
+  margin-top: 0;
+  margin-bottom: 4rem;
+}
+
+.about-content > ul > li {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 /* ========== Markdown 表格样式 ========== */

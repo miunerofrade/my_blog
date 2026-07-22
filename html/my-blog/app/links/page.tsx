@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 type LinkItem = {
   name: string;
@@ -40,10 +41,13 @@ function FaviconImg({ item }: { item: LinkItem }) {
 
   if (failed) {
     return (
-      <div className="w-14 h-14 rounded-2xl shrink-0 overflow-hidden bg-white dark:bg-zinc-900">
-        <img
+      <div className="w-14 h-14 rounded-lg shrink-0 overflow-hidden bg-[var(--surface-color)]">
+        <Image
           src={`https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=f4f4f5&color=27272a&bold=true&size=128`}
           alt={`${item.name}'s icon`}
+          width={56}
+          height={56}
+          unoptimized
           className="w-full h-full object-cover"
         />
       </div>
@@ -55,10 +59,13 @@ function FaviconImg({ item }: { item: LinkItem }) {
     : `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 
   return (
-    <div className="w-14 h-14 rounded-2xl shrink-0 overflow-hidden bg-white dark:bg-zinc-900">
-      <img
+    <div className="w-14 h-14 rounded-lg shrink-0 overflow-hidden bg-[var(--surface-color)]">
+      <Image
         src={src}
         alt={`${item.name}'s icon`}
+        width={56}
+        height={56}
+        unoptimized
         className="w-full h-full object-cover"
         onError={() => setFailed(true)}
       />
@@ -78,7 +85,7 @@ export default function LinksPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[clamp(2rem,4.5vw,4.5rem)] md:text-[clamp(2.5rem,3vw,5rem)] font-black tracking-tighter uppercase"
+            className="font-playfair text-[clamp(2rem,4.5vw,4.5rem)] md:text-[clamp(2.5rem,3vw,5rem)] font-bold tracking-normal uppercase"
           >
             Friends<span className="text-terracotta">.</span>
           </motion.h1>
@@ -88,7 +95,7 @@ export default function LinksPage() {
             transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
             className="mt-6 text-lg text-foreground/50 max-w-xl leading-relaxed"
           >
-            Here are some of the brilliant minds I've had the pleasure of crossing paths with in the digital world.
+            Here are some of the brilliant minds I&apos;ve had the pleasure of crossing paths with in the digital world.
           </motion.p>
         </header>
 

@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# My Blog Web App
 
-## Getting Started
+博客的 Next.js 应用。项目读取 `content/posts` 中的 Markdown 文件生成文章页面，不依赖数据库或外部后端服务。
 
-First, run the development server:
+## 环境要求
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 20.9 或更高版本
+- pnpm（推荐通过 Node.js 自带的 Corepack 调用）
+
+## 开发
+
+```powershell
+corepack pnpm install --frozen-lockfile
+corepack pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+开发服务器默认运行在 <http://localhost:3000>。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 构建和运行
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```powershell
+corepack pnpm build
+corepack pnpm start
+```
 
-## Learn More
+## 代码检查
 
-To learn more about Next.js, take a look at the following resources:
+```powershell
+corepack pnpm lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 目录
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app`：App Router 页面和布局
+- `components`：共享 React 组件
+- `content/posts`：Markdown 文章
+- `lib`：文章解析和 Remark 插件
+- `public`：静态资源

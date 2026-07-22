@@ -2,10 +2,11 @@ import { visit } from "unist-util-visit";
 import { imageSize } from "image-size";
 import { readFileSync } from "fs";
 import path from "path";
+import type { Image, Root } from "mdast";
 
-export const remarkImgAttrs = () => (tree: any) => {
-  visit(tree, "image", (node: any) => {
-    const params: Record<string, any> = {};
+export const remarkImgAttrs = () => (tree: Root) => {
+  visit(tree, "image", (node: Image) => {
+    const params: Record<string, string | number | undefined> = {};
 
     if (node.url && !node.url.startsWith("http")) {
       try {

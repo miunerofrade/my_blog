@@ -26,31 +26,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
       style={{ paddingBottom: '3rem' }}>
       <div className="w-full max-w-[1080px] px-8 flex flex-col md:flex-row items-start gap-12 md:gap-20">
         
-        {/* 左侧：时间轴侧边栏 */}
-        <motion.aside 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          style={{ marginTop: '6vh' }}
-          className="hidden md:flex flex-col sticky top-[15vh] w-28 shrink-0 gap-6"
-        >
-          <span className="text-xs font-black tracking-widest text-foreground/30 uppercase">
-            Timeline
-          </span>
-          <nav className="flex flex-col gap-5">
-            {initialData.map((group) => (
-              <a 
-                key={group.year} 
-                href={`#year-${group.year}`} 
-                className="text-sm font-bold tracking-widest text-foreground/40 hover:text-terracotta transition-colors"
-              >
-                {group.year}
-              </a>
-            ))}
-          </nav>
-        </motion.aside>
-
-        {/* 右侧：主体内容区 */}
+        {/* 主体内容区 */}
         <div className="flex-1 flex flex-col w-full max-w-[840px]">
           <header 
             style={{ marginTop: '6vh', marginBottom: '4vh' }} 
@@ -60,7 +36,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[clamp(2rem,4.5vw,4.5rem)] md:text-[clamp(2.5rem,3vw,5rem)] font-black tracking-tighter uppercase"
+              className="font-playfair text-[clamp(2rem,4.5vw,4.5rem)] md:text-[clamp(2.5rem,3vw,5rem)] font-bold tracking-normal uppercase"
             >
               Articles<span className="text-terracotta">.</span>
             </motion.h1>
@@ -69,32 +45,45 @@ export default function ArticleClient({ initialData = [] }: Props) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-              className="flex items-center gap-2"
+              className="flex items-center"
             >
               <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 transition-colors duration-300 ${viewMode === 'list' ? 'text-terracotta' : 'text-foreground/30 hover:text-foreground/70'}`}
-                aria-label="List view"
+                type="button"
+                onClick={() => setViewMode((current) => current === 'list' ? 'grid' : 'list')}
+                className="flex h-9 w-9 items-center justify-center text-foreground/40 transition-colors duration-200 hover:text-terracotta"
+                aria-label={viewMode === 'list' ? '切换到卡片视图' : '切换到列表视图'}
+                aria-pressed={viewMode === 'grid'}
+                title={viewMode === 'list' ? '切换到卡片视图' : '切换到列表视图'}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="8" y1="6" x2="21" y2="6"></line>
-                  <line x1="8" y1="12" x2="21" y2="12"></line>
-                  <line x1="8" y1="18" x2="21" y2="18"></line>
-                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                </svg>
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 transition-colors duration-300 ${viewMode === 'grid' ? 'text-terracotta' : 'text-foreground/30 hover:text-foreground/70'}`}
-                aria-label="Grid view"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="3" y1="12" x2="21" y2="12"></line>
-                  <line x1="12" y1="3" x2="12" y2="21"></line>
-                </svg>
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={viewMode}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex"
+                    aria-hidden="true"
+                  >
+                    {viewMode === 'list' ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6" />
+                        <line x1="8" y1="12" x2="21" y2="12" />
+                        <line x1="8" y1="18" x2="21" y2="18" />
+                        <line x1="3" y1="6" x2="3.01" y2="6" />
+                        <line x1="3" y1="12" x2="3.01" y2="12" />
+                        <line x1="3" y1="18" x2="3.01" y2="18" />
+                      </svg>
+                    )}
+                  </motion.span>
+                </AnimatePresence>
               </button>
             </motion.div>
           </header>
@@ -179,6 +168,30 @@ export default function ArticleClient({ initialData = [] }: Props) {
             ))}
           </div>
         </div>
+
+        {/* 右侧：时间轴侧边栏 */}
+        <motion.aside
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          style={{ marginTop: '6vh' }}
+          className="hidden md:flex flex-col sticky top-[15vh] w-28 shrink-0 gap-6"
+        >
+          <span className="text-xs font-black tracking-widest text-foreground/30 uppercase">
+            Timeline
+          </span>
+          <nav className="flex flex-col gap-5">
+            {initialData.map((group) => (
+              <a
+                key={group.year}
+                href={`#year-${group.year}`}
+                className="text-sm font-bold tracking-widest text-foreground/40 hover:text-terracotta transition-colors"
+              >
+                {group.year}
+              </a>
+            ))}
+          </nav>
+        </motion.aside>
       </div>
     </main>
   );

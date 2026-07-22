@@ -2,37 +2,67 @@
 import { useEffect, useState } from "react";
 import type { HeadingItem } from "@/lib/posts";
 
+const HEADING_OFFSET = 96;
+
 export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
+    const elements = headings
+      .map((heading) => document.getElementById(heading.id))
+      .filter((element): element is HTMLElement => element !== null);
+    let animationFrame = 0;
+
+    const updateActiveHeading = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        let currentId = "";
+        for (const element of elements) {
+          if (element.getBoundingClientRect().top <= HEADING_OFFSET + 1) {
+            currentId = element.id;
+          } else {
+            break;
           }
         }
-      },
-      { rootMargin: "-80px 0px -75% 0px" }
-    );
 
-    const elements: Element[] = [];
-    for (const h of headings) {
-      const el = document.getElementById(h.id);
-      if (el) {
-        elements.push(el);
-        observer.observe(el);
-      }
-    }
+        const atPageBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+        if (atPageBottom && elements.length > 0) {
+          currentId = elements[elements.length - 1].id;
+        }
+
+        setActiveId(currentId);
+      });
+    };
+
+    updateActiveHeading();
+    window.addEventListener("scroll", updateActiveHeading, { passive: true });
+    window.addEventListener("resize", updateActiveHeading);
 
     return () => {
-      for (const el of elements) observer.unobserve(el);
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", updateActiveHeading);
+      window.removeEventListener("resize", updateActiveHeading);
     };
   }, [headings]);
 
+  const navigateToHeading = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    event.preventDefault();
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    setActiveId(id);
+    const hash = `#${id}`;
+    if (window.location.hash !== hash) {
+      window.history.pushState(null, "", hash);
+    }
+
+    const top = window.scrollY + target.getBoundingClientRect().top - HEADING_OFFSET;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  };
+
   return (
     <aside
+      className="hidden lg:block"
       style={{
         width: '12rem',
         flexShrink: 0,
@@ -62,6 +92,7 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
             <a
               key={h.id}
               href={`#${h.id}`}
+              onClick={(event) => navigateToHeading(event, h.id)}
               style={{
                 display: 'block',
                 fontSize: '0.75rem',
@@ -79,7 +110,7 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.color = 'rgba(217, 119, 87, 0.5)';
+                  e.currentTarget.style.color = 'rgb(217, 119, 87)';
                 }
               }}
               onMouseLeave={(e) => {

@@ -23,7 +23,6 @@ export default function ArticleLayout({
           gap: showTOC ? '5rem' : '0',
         }}
       >
-        {showTOC && <TOCSidebar headings={headings} />}
         <div
           ref={mdxRef}
           className="min-w-0 flex-1 flex flex-col"
@@ -34,6 +33,7 @@ export default function ArticleLayout({
         >
           {children}
         </div>
+        {showTOC && <TOCSidebar headings={headings} />}
       </div>
     </>
   );

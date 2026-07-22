@@ -31,7 +31,7 @@ export default async function TagPage({
           >
             <span aria-hidden="true">←</span> 所有文章
           </Link>
-          <h1 className="text-[clamp(2rem,4.5vw,4.5rem)] font-black tracking-tighter uppercase">
+          <h1 className="font-playfair text-[clamp(2rem,4.5vw,4.5rem)] font-bold tracking-normal uppercase">
             <span className="text-terracotta">#</span>{tag}
           </h1>
           <p className="mt-2 text-sm text-foreground/50">

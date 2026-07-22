@@ -1,19 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ImageZoom({ src, alt, title, style, ...props }: any) {
+interface ImageZoomProps {
+  src?: string | Blob;
+  alt?: string;
+  title?: string;
+  width?: string | number;
+  height?: string | number;
+  style?: CSSProperties;
+}
+
+export default function ImageZoom({ src, alt, title, width, height, style }: ImageZoomProps) {
   const [isZoomed, setIsZoomed] = useState(false);
+  const layoutId = `zoom-${typeof src === "string" ? src : "image"}`;
 
   return (
     <>
       <motion.img
-        layoutId={`zoom-${src}`}
+        layoutId={layoutId}
         src={src}
         alt={alt}
         title={title}
+        width={width}
+        height={height}
         style={style}
-        {...props}
         onClick={() => setIsZoomed(true)}
         className="cursor-zoom-in rounded-xl transition-shadow hover:shadow-md"
       />
@@ -30,7 +41,7 @@ export default function ImageZoom({ src, alt, title, style, ...props }: any) {
               className="absolute inset-0 block bg-background/80 backdrop-blur-md"
             />
             <motion.img
-              layoutId={`zoom-${src}`}
+              layoutId={layoutId}
               src={src}
               alt={alt}
               className="relative z-10 max-w-[90vw] max-h-[90vh] object-contain rounded-2xl shadow-2xl"

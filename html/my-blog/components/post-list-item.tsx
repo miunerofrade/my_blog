@@ -1,12 +1,37 @@
+"use client";
+
 import Link from "next/link";
 import type { PostData } from "@/lib/posts";
+import type { CSSProperties, PointerEvent } from "react";
+
+type HighlightStyle = CSSProperties & {
+  "--hover-origin": string;
+};
+
+const itemStyle: HighlightStyle = {
+  paddingTop: "0.5rem",
+  paddingBottom: "1rem",
+  "--hover-origin": "50%",
+};
+
+const highlightStyle: CSSProperties = {
+  transformOrigin: "var(--hover-origin) center",
+};
 
 export default function PostListItem({ post }: { post: PostData }) {
+  const updateHighlightOrigin = (event: PointerEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const position = ((event.clientX - bounds.left) / bounds.width) * 100;
+    event.currentTarget.style.setProperty("--hover-origin", `${position}%`);
+  };
+
   return (
     <Link href={`/article/${post.slug}`} className="">
       <div
         className="group relative flex items-start justify-between transition-colors duration-300"
-        style={{ paddingTop: '0.5rem', paddingBottom: '1rem' }}
+        style={itemStyle}
+        onPointerEnter={updateHighlightOrigin}
+        onPointerMove={updateHighlightOrigin}
       >
         <span className="w-28 md:w-36 shrink-0 text-sm font-bold tracking-widest text-foreground/40 uppercase mt-1">
           {post.date}
@@ -25,21 +50,15 @@ export default function PostListItem({ post }: { post: PostData }) {
             →
           </span>
         </div>
-        <svg
-          className="absolute bottom-0 left-0 w-full h-[2px] -z-10"
-          viewBox="0 0 100 2"
-          preserveAspectRatio="none"
+        <span
+          className="absolute bottom-0 left-0 h-px w-full bg-foreground/10"
           aria-hidden="true"
-        >
-          <rect x="0" y="1" width="100" height="1" className="fill-foreground/10" />
-          <rect
-            x="0"
-            y="1"
-            width="100"
-            height="1"
-            className="fill-terracotta transition-all duration-500 ease-out translate-y-[2px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
-          />
-        </svg>
+        />
+        <span
+          className="absolute bottom-0 left-0 h-[2px] w-full origin-center scale-x-0 bg-terracotta transition-transform duration-500 ease-out group-hover:scale-x-100"
+          style={highlightStyle}
+          aria-hidden="true"
+        />
       </div>
     </Link>
   );

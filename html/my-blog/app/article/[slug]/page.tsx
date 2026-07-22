@@ -7,6 +7,8 @@ import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import { visit } from "unist-util-visit";
+import type { Element, ElementContent, Root } from "hast";
+import type { ComponentPropsWithoutRef } from "react";
 import "katex/dist/katex.min.css";
 import { Mermaid } from "@/components/mermaid";
 import { CodeBlock } from "@/components/code-block";
@@ -24,13 +26,26 @@ export async function generateStaticParams() {
   }));
 }
 
-const preProcessMermaid = () => (tree: Record<string, unknown>) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  visit(tree, 'element', (node: any) => {
+const isElement = (node: ElementContent): node is Element => node.type === "element";
+
+const getTextContent = (node: ElementContent): string => {
+  if (node.type === "text") return node.value;
+  if (node.type === "element") return node.children.map(getTextContent).join("");
+  return "";
+};
+
+const preProcessMermaid = () => (tree: Root) => {
+  visit(tree, 'element', (node: Element) => {
     if (node.tagName === 'pre') {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const codeNode = node.children?.find((c: any) => c.tagName === 'code');
-      if (codeNode && codeNode.properties?.className?.includes('language-mermaid')) {
+      const codeNode = node.children.find(
+        (child): child is Element => isElement(child) && child.tagName === 'code'
+      );
+      const classNames = codeNode?.properties.className;
+      const isMermaid = Array.isArray(classNames)
+        ? classNames.includes('language-mermaid')
+        : classNames === 'language-mermaid';
+
+      if (codeNode && isMermaid) {
         node.tagName = 'div';
         node.properties.className = ['mermaid-container'];
         const textNode = codeNode.children?.[0];
@@ -43,14 +58,15 @@ const preProcessMermaid = () => (tree: Record<string, unknown>) => {
   });
 };
 
-const copyDataLanguageToFigure = () => (tree: Record<string, unknown>) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  visit(tree, 'element', (node: any) => {
+const copyDataLanguageToFigure = () => (tree: Root) => {
+  visit(tree, 'element', (node: Element) => {
     if (
       node.tagName === 'figure' &&
       node.properties?.['data-rehype-pretty-code-figure'] !== undefined
     ) {
-      const pre = node.children?.find((c: any) => c.tagName === 'pre');
+      const pre = node.children.find(
+        (child): child is Element => isElement(child) && child.tagName === 'pre'
+      );
       if (pre?.properties?.['data-language']) {
         node.properties['data-language'] = pre.properties['data-language'];
       }
@@ -58,12 +74,10 @@ const copyDataLanguageToFigure = () => (tree: Record<string, unknown>) => {
   });
 };
 
-const rehypeAddIds = () => (tree: Record<string, unknown>) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  visit(tree, 'element', (node: any) => {
+const rehypeAddIds = () => (tree: Root) => {
+  visit(tree, 'element', (node: Element) => {
     if (node.tagName === 'h2' || node.tagName === 'h3') {
-      const textNode = node.children?.[0];
-      const text = textNode?.value || textNode?.children?.[0]?.value || '';
+      const text = node.children.map(getTextContent).join('');
       const id = text
         .toLowerCase()
         .replace(/[^\w一-鿿]+/g, '-')
@@ -104,12 +118,12 @@ export default async function PostPage({
   const otherPosts = sortedPosts.filter((p) => p.slug !== slug).slice(0, 5);
 
   const components = {
-    h1: (props: any) => <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-foreground" style={{ marginTop: '2rem', marginBottom: '1rem' }} {...props} />,
-    h2: (props: any) => <h2 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
-    h3: (props: any) => <h3 className="text-xl md:text-2xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.25rem', marginBottom: '0.5rem' }} {...props} />,
+    h1: (props: ComponentPropsWithoutRef<"h1">) => <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-foreground" style={{ marginTop: '2rem', marginBottom: '1rem' }} {...props} />,
+    h2: (props: ComponentPropsWithoutRef<"h2">) => <h2 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
+    h3: (props: ComponentPropsWithoutRef<"h3">) => <h3 className="text-xl md:text-2xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.25rem', marginBottom: '0.5rem' }} {...props} />,
     pre: CodeBlock,
-    img: (props: any) => {
-      const { src, alt, title, ...rest } = props;
+    img: (props: ComponentPropsWithoutRef<"img">) => {
+      const { src, alt, title } = props;
 
       let width: number | undefined;
       let height: number | undefined;
@@ -118,11 +132,11 @@ export default async function PostPage({
 
       if (title) {
         try {
-          const p = JSON.parse(title);
-          width        = p.w      ? Number(p.w)      : undefined;
-          height       = p.h      ? Number(p.h)      : undefined;
-          align        = p.align  ?? undefined;
-          displayTitle = p.title  ?? undefined;
+          const parsed = JSON.parse(title) as Record<string, unknown>;
+          width = parsed.w ? Number(parsed.w) : undefined;
+          height = parsed.h ? Number(parsed.h) : undefined;
+          align = typeof parsed.align === "string" ? parsed.align : undefined;
+          displayTitle = typeof parsed.title === "string" ? parsed.title : undefined;
         } catch {
           displayTitle = title;
         }
@@ -131,7 +145,7 @@ export default async function PostPage({
       const style: React.CSSProperties = {
         maxWidth: "100%",
         height: height ? `${height}px` : "auto",
-        ...(align === "center" && { display: "block", margin: "0 auto" }),
+        ...((!align || align === "center") && { display: "block", margin: "0 auto" }),
         ...(align === "left"   && { float: "left",  marginRight: "1.5rem" }),
         ...(align === "right"  && { float: "right", marginLeft: "1.5rem" }),
       };
@@ -144,12 +158,11 @@ export default async function PostPage({
           width={width}
           height={height}
           style={style}
-          {...rest}
         />
       );
     },
     Spacer,
-    div: ({ className, "data-chart": chart, children, ...props }: any) => {
+    div: ({ className, "data-chart": chart, children, ...props }: ComponentPropsWithoutRef<"div"> & { "data-chart"?: string }) => {
       if (className && className.includes("mermaid-container") && chart) {
         return <Mermaid chart={chart} />;
       }
@@ -218,7 +231,7 @@ export default async function PostPage({
                     rehypeAddIds,
                     rehypeKatex,
                     [rehypePrettyCode, {
-                      theme: { light: "github-light", dark: "github-dark" },
+                      theme: { light: "github-light", dark: "one-dark-pro" },
                       keepBackground: true
                     }],
                     copyDataLanguageToFigure
