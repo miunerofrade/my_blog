@@ -15,7 +15,6 @@
 - React 19.2.4
 - Tailwind CSS 4
 - Framer Motion
-- next-mdx-remote、Remark 和 Rehype
 
 ## 本地运行
 
@@ -39,3 +38,7 @@ corepack pnpm lint
 ```
 
 博客文章存放在 `html/my-blog/content/posts`，添加 Markdown 文件即可新增文章。
+
+## 关于个人网站的部署
+
+ 托管在[Vercel](htts://vercel.com)再购买域名即可。[我的网站](https://miunerofrade.com)
