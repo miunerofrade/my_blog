@@ -144,7 +144,8 @@ export default async function PostPage({
 
       const style: React.CSSProperties = {
         maxWidth: "100%",
-        height: height ? `${height}px` : "auto",
+        // Keep the intrinsic ratio when the article column constrains width.
+        height: "auto",
         ...((!align || align === "center") && { display: "block", margin: "0 auto" }),
         ...(align === "left"   && { float: "left",  marginRight: "1.5rem" }),
         ...(align === "right"  && { float: "right", marginLeft: "1.5rem" }),
