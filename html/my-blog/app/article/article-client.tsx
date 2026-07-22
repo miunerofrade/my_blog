@@ -155,7 +155,10 @@ export default function ArticleClient({ initialData = [] }: Props) {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          style={{ marginTop: '6vh' }}
+          style={{
+            marginTop: '6vh',
+            fontFamily: 'var(--font-playfair), "Playfair Display", var(--font-noto-serif-sc), "Noto Serif SC", serif',
+          }}
           className="article-sidebar-align article-timeline hidden md:flex flex-col sticky top-[15vh] gap-6"
         >
           <span className="text-xs font-black tracking-widest text-foreground/30 uppercase">
