@@ -20,3 +20,5 @@ html/index.html
 html/package-lock.json
 html/package.json
 html/*.png
+# Obsidian workspace metadata (at any directory depth)
+**/.obsidian/
