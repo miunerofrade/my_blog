@@ -564,6 +564,76 @@ body {
   column-gap: 4rem;
 }
 
+/* Full-height mobile navigation drawer. Keep this explicit so spacing does not
+   depend on utility generation or be overridden by desktop navbar rules. */
+.mobile-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  width: 72vw;
+  max-width: 24rem;
+  height: 100dvh;
+  flex-direction: column;
+  padding: 2rem 2rem 2.5rem;
+  border-left: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--background) 95%, transparent);
+  box-shadow: -1.25rem 0 3rem rgb(0 0 0 / 14%);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+}
+
+.mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-drawer-title {
+  color: var(--text-color);
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.mobile-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  padding-top: 1.5rem;
+}
+
+.mobile-drawer-link {
+  position: relative;
+  display: block;
+  padding: 1.5rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  color: color-mix(in srgb, var(--text-color) 78%, transparent);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
+  transition: color 180ms ease;
+}
+
+.mobile-drawer-link:last-child {
+  border-bottom: 0;
+}
+
+.mobile-drawer-link:hover,
+.mobile-drawer-link[aria-current="page"] {
+  color: var(--color-terracotta);
+}
+
+@media (max-width: 700px) {
+  .mobile-drawer {
+    width: 72vw;
+    max-width: none;
+  }
+}
+
 .article-main-column {
   min-width: 0;
   width: 100%;
