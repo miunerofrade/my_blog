@@ -1,23 +1,11 @@
 import { getPostData, getAllPostSlugs, getGroupedPosts } from "@/lib/posts";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import remarkGfm from "remark-gfm";
-import rehypePrettyCode from "rehype-pretty-code";
-import { visit } from "unist-util-visit";
-import type { Element, ElementContent, Root } from "hast";
-import type { ComponentPropsWithoutRef } from "react";
 import "katex/dist/katex.min.css";
-import { Mermaid } from "@/components/mermaid";
-import { CodeBlock } from "@/components/code-block";
 import { BackButton } from "@/components/back-button";
-import { Spacer } from "@/components/spacer";
-import { remarkImgAttrs } from "@/lib/remark-img-attrs";
 import ArticleLayout from "@/components/article-layout";
 import ReadingProgress from "@/components/reading-progress";
-import ImageZoom from "@/components/image-zoom";
+import MarkdownRenderer from "@/components/markdown-renderer";
 
 export async function generateStaticParams() {
   const posts = getAllPostSlugs();
@@ -25,67 +13,6 @@ export async function generateStaticParams() {
     slug: post.slug,
   }));
 }
-
-const isElement = (node: ElementContent): node is Element => node.type === "element";
-
-const getTextContent = (node: ElementContent): string => {
-  if (node.type === "text") return node.value;
-  if (node.type === "element") return node.children.map(getTextContent).join("");
-  return "";
-};
-
-const preProcessMermaid = () => (tree: Root) => {
-  visit(tree, 'element', (node: Element) => {
-    if (node.tagName === 'pre') {
-      const codeNode = node.children.find(
-        (child): child is Element => isElement(child) && child.tagName === 'code'
-      );
-      const classNames = codeNode?.properties.className;
-      const isMermaid = Array.isArray(classNames)
-        ? classNames.includes('language-mermaid')
-        : classNames === 'language-mermaid';
-
-      if (codeNode && isMermaid) {
-        node.tagName = 'div';
-        node.properties.className = ['mermaid-container'];
-        const textNode = codeNode.children?.[0];
-        if (textNode && textNode.type === 'text') {
-          node.properties['data-chart'] = textNode.value;
-        }
-        node.children = [];
-      }
-    }
-  });
-};
-
-const copyDataLanguageToFigure = () => (tree: Root) => {
-  visit(tree, 'element', (node: Element) => {
-    if (
-      node.tagName === 'figure' &&
-      node.properties?.['data-rehype-pretty-code-figure'] !== undefined
-    ) {
-      const pre = node.children.find(
-        (child): child is Element => isElement(child) && child.tagName === 'pre'
-      );
-      if (pre?.properties?.['data-language']) {
-        node.properties['data-language'] = pre.properties['data-language'];
-      }
-    }
-  });
-};
-
-const rehypeAddIds = () => (tree: Root) => {
-  visit(tree, 'element', (node: Element) => {
-    if (node.tagName === 'h2' || node.tagName === 'h3') {
-      const text = node.children.map(getTextContent).join('');
-      const id = text
-        .toLowerCase()
-        .replace(/[^\w一-鿿]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-      node.properties = { ...node.properties, id };
-    }
-  });
-};
 
 export async function generateMetadata({
   params
@@ -116,62 +43,6 @@ export default async function PostPage({
   const prevPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
   const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
   const otherPosts = sortedPosts.filter((p) => p.slug !== slug).slice(0, 5);
-
-  const components = {
-    h1: (props: ComponentPropsWithoutRef<"h1">) => <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-foreground" style={{ marginTop: '2rem', marginBottom: '1rem' }} {...props} />,
-    h2: (props: ComponentPropsWithoutRef<"h2">) => <h2 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
-    h3: (props: ComponentPropsWithoutRef<"h3">) => <h3 className="text-xl md:text-2xl font-bold tracking-tight leading-snug text-foreground" style={{ marginTop: '1.25rem', marginBottom: '0.5rem' }} {...props} />,
-    pre: CodeBlock,
-    img: (props: ComponentPropsWithoutRef<"img">) => {
-      const { src, alt, title } = props;
-
-      let width: number | undefined;
-      let height: number | undefined;
-      let align: string | undefined;
-      let displayTitle: string | undefined;
-
-      if (title) {
-        try {
-          const parsed = JSON.parse(title) as Record<string, unknown>;
-          width = parsed.w ? Number(parsed.w) : undefined;
-          height = parsed.h ? Number(parsed.h) : undefined;
-          align = typeof parsed.align === "string" ? parsed.align : undefined;
-          displayTitle = typeof parsed.title === "string" ? parsed.title : undefined;
-        } catch {
-          displayTitle = title;
-        }
-      }
-
-      const style: React.CSSProperties = {
-        maxWidth: "100%",
-        // Keep the intrinsic ratio when the article column constrains width.
-        height: "auto",
-        // Centered markdown images use the full reading column by default.
-        ...((!align || align === "center") && { width: "100%" }),
-        ...((!align || align === "center") && { display: "block", margin: "0 auto" }),
-        ...(align === "left"   && { float: "left",  marginRight: "1.5rem" }),
-        ...(align === "right"  && { float: "right", marginLeft: "1.5rem" }),
-      };
-
-      return (
-        <ImageZoom
-          src={src}
-          alt={alt}
-          title={displayTitle}
-          width={width}
-          height={height}
-          style={style}
-        />
-      );
-    },
-    Spacer,
-    div: ({ className, "data-chart": chart, children, ...props }: ComponentPropsWithoutRef<"div"> & { "data-chart"?: string }) => {
-      if (className && className.includes("mermaid-container") && chart) {
-        return <Mermaid chart={chart} />;
-      }
-      return <div className={className} {...props}>{children}</div>;
-    }
-  };
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground transition-colors duration-300"
@@ -223,25 +94,7 @@ export default async function PostPage({
             prose-code:before:content-none prose-code:after:content-none
             prose-code:text-foreground dark:prose-code:text-foreground"
           >
-            <MDXRemote
-              source={postData.content}
-              components={components}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkMath, remarkGfm, remarkImgAttrs],
-                  rehypePlugins: [
-                    preProcessMermaid,
-                    rehypeAddIds,
-                    rehypeKatex,
-                    [rehypePrettyCode, {
-                      theme: { light: "github-light", dark: "one-dark-pro" },
-                      keepBackground: true
-                    }],
-                    copyDataLanguageToFigure
-                  ],
-                }
-              }}
-            />
+            <MarkdownRenderer source={postData.content} />
           </div>
           </ReadingProgress>
 
