@@ -146,6 +146,8 @@ export default async function PostPage({
         maxWidth: "100%",
         // Keep the intrinsic ratio when the article column constrains width.
         height: "auto",
+        // Centered markdown images use the full reading column by default.
+        ...((!align || align === "center") && { width: "100%" }),
         ...((!align || align === "center") && { display: "block", margin: "0 auto" }),
         ...(align === "left"   && { float: "left",  marginRight: "1.5rem" }),
         ...(align === "right"  && { float: "right", marginLeft: "1.5rem" }),
