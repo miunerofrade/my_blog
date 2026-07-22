@@ -138,7 +138,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       `}
       style={megaOpen ? { backgroundColor: 'var(--background, var(--bg-color))' } : {}}
     >
-      <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-6 md:px-6">
+      <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-8 md:px-6">
 
         <div className="flex-1 flex justify-start min-w-0">
           <Link href="/" onClick={() => setMobileOpen(false)} className="text-xl font-black tracking-[-0.5px] text-foreground">
@@ -203,10 +203,10 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 360, damping: 34 }}
-              className="absolute right-0 top-0 flex h-dvh w-[68vw] max-w-[22rem] flex-col border-l border-foreground/10 bg-background/95 px-6 pb-8 pt-6 shadow-2xl backdrop-blur-xl"
+              className="absolute right-0 top-0 flex h-dvh w-[72vw] max-w-[24rem] flex-col border-l border-foreground/10 bg-background/95 px-8 pb-10 pt-8 shadow-2xl backdrop-blur-xl"
             >
-              <div className="flex items-center justify-between border-b border-foreground/10 pb-5">
-                <span className="font-playfair text-lg font-bold text-foreground">Navigation<span className="text-terracotta">.</span></span>
+              <div className="flex items-center justify-between border-b border-foreground/10 pb-7">
+                <span className="font-playfair text-2xl font-bold tracking-wide text-foreground">Navigation<span className="text-terracotta">.</span></span>
                 <button
                   type="button"
                   className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-terracotta"
@@ -216,7 +216,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                   <X size={21} strokeWidth={1.8} />
                 </button>
               </div>
-              <nav className="flex flex-col pt-5" aria-label="移动端导航">
+              <nav className="flex flex-col pt-6" aria-label="移动端导航">
               {NAV_LINKS.map((link) => {
                 const isActive = activeNavigationHref === link.href;
                 return (
@@ -225,7 +225,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative border-b border-foreground/10 px-2 py-4 text-base font-bold tracking-widest transition-colors last:border-b-0 ${
+                    className={`relative border-b border-foreground/10 px-2 py-6 text-2xl font-bold leading-tight tracking-widest transition-colors last:border-b-0 ${
                       isActive ? "text-terracotta" : "text-foreground/75 hover:text-terracotta"
                     }`}
                   >
