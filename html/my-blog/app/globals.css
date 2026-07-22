@@ -91,6 +91,16 @@ code {
   --surface-hover-color: #fafaf8;
   --border-color: rgb(29 29 31 / 12%);
 }
+
+.code-copy-button {
+  z-index: 2;
+}
+
+@media (pointer: coarse), (max-width: 700px) {
+  .code-copy-button {
+    opacity: 1;
+  }
+}
 .dark {
   --bg-color: #282c34;
   --text-color: #abb2bf;
@@ -906,6 +916,27 @@ body {
   margin-top: 0 !important;
 }
 
+.article-content ul,
+.article-content ol {
+  box-sizing: border-box;
+  max-width: 100%;
+  margin-inline: 0;
+  padding-inline-start: 1.75rem;
+  overflow-wrap: anywhere;
+}
+
+.article-content li {
+  max-width: 100%;
+  padding-inline-start: 0.2rem;
+}
+
+.article-content pre,
+.article-content figure,
+.article-content [data-rehype-pretty-code-figure] {
+  max-width: 100%;
+  min-width: 0;
+}
+
 /* Markdown blockquotes need a distinct editorial voice, not only italics. */
 .article-content blockquote {
   position: relative;
@@ -999,6 +1030,11 @@ body {
 }
 
 @media (max-width: 700px) {
+  .article-content ul,
+  .article-content ol {
+    padding-inline-start: 1.5rem;
+  }
+
   .article-content blockquote {
     margin: 1.5rem 0;
     padding: 1.1rem 1.1rem 1.1rem 1.25rem;
