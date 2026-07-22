@@ -144,7 +144,7 @@ export default function LinksPage() {
           </p>
           <ul className="mt-6 text-base text-foreground/85 leading-relaxed">
             <li style={{ marginBottom: '0.5rem' }}><span className="font-semibold text-foreground text-lg">名称：</span><span className="font-medium text-foreground text-xl">Miunerofrade</span></li>
-            <li style={{ marginBottom: '0.5rem' }}><span className="font-semibold text-foreground text-lg">链接：</span><a className="underline font-semibold text-terracotta text-xl" href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a></li>
+            <li style={{ marginBottom: '0.5rem' }}><span className="font-semibold text-foreground text-lg">链接：</span><a className="underline font-semibold text-terracotta text-xl" href="https://miunerofrade.com" target="_blank" rel="noopener noreferrer">https://miunerofrade.com</a></li>
             <li style={{ marginBottom: '0.5rem' }}><span className="font-semibold text-foreground text-lg">简介：</span><span className="font-medium text-foreground text-xl">不定时悲伤。</span></li>
             <li style={{ marginBottom: '0.5rem' }}><span className="font-semibold text-foreground text-lg">头像：</span><a className="underline font-semibold text-terracotta text-xl" href="https://imgchr.com/i/peHkUS0" target="_blank" rel="noopener noreferrer">https://imgchr.com/i/peHkUS0</a></li>
           </ul>

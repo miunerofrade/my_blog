@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./theme-toggle";
 import type { PostData } from "@/lib/posts";
+import { Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "首页", routes: ["/"] },
@@ -75,6 +76,7 @@ function NavbarLink({
 export default function Navbar({ recentPosts = [] }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const enterTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -122,16 +124,16 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       `}
       style={megaOpen ? { backgroundColor: 'var(--background, var(--bg-color))' } : {}}
     >
-      <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-6">
+      <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-4 md:px-6">
 
-        <div className="flex-1 flex justify-start">
-          <Link href="/" className="text-xl font-black tracking-[-0.5px] text-foreground">
+        <div className="flex-1 flex justify-start min-w-0">
+          <Link href="/" onClick={() => setMobileOpen(false)} className="text-xl font-black tracking-[-0.5px] text-foreground">
             Miunerofrade
           </Link>
         </div>
 
         <LayoutGroup id="primary-navigation">
-          <div className="relative flex h-full flex-1 items-center justify-center gap-12 text-base font-bold tracking-widest uppercase">
+          <div className="relative hidden h-full flex-1 items-center justify-center gap-12 text-base font-bold tracking-widest uppercase md:flex">
             {NAV_LINKS.map((link) => (
               <NavbarLink
                 key={link.href}
@@ -145,10 +147,56 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           </div>
         </LayoutGroup>
 
-        <div className="flex-1 flex justify-end">
+        <div className="flex-1 flex justify-end items-center gap-1">
           <ThemeToggle />
+          <button
+            type="button"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-terracotta md:hidden"
+            aria-label={mobileOpen ? "关闭导航菜单" : "打开导航菜单"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => {
+              setMobileOpen((open) => !open);
+              setMegaOpen(false);
+            }}
+          >
+            {mobileOpen ? <X size={21} strokeWidth={1.8} /> : <Menu size={21} strokeWidth={1.8} />}
+          </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            id="mobile-navigation"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="absolute left-0 top-full w-full overflow-hidden border-b border-foreground/10 bg-background/95 shadow-lg backdrop-blur-md md:hidden"
+          >
+            <nav className="mx-auto flex w-full max-w-[1080px] flex-col px-4 py-3" aria-label="移动端导航">
+              {NAV_LINKS.map((link) => {
+                const isActive = activeNavigationHref === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`relative border-b border-foreground/10 px-2 py-3 text-base font-bold tracking-widest transition-colors last:border-b-0 ${
+                      isActive ? "text-terracotta" : "text-foreground/75 hover:text-terracotta"
+                    }`}
+                  >
+                    {link.label}
+                    {isActive && <span className="absolute bottom-0 left-2 h-0.5 w-8 bg-terracotta" aria-hidden="true" />}
+                  </Link>
+                );
+              })}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {megaOpen && recentPosts.length > 0 && (
@@ -157,7 +205,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
             animate={{ clipPath: 'inset(0 0 0 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
-            className="absolute top-full left-0 w-full flex justify-center border-b border-foreground/10 z-[60] shadow-sm overflow-hidden bg-background"
+            className="absolute top-full left-0 hidden w-full justify-center border-b border-foreground/10 z-[60] shadow-sm overflow-hidden bg-background md:flex"
             style={{ backgroundColor: 'var(--background, var(--bg-color))' }}
             onMouseEnter={() => {
               clearTimeout(leaveTimer.current);
