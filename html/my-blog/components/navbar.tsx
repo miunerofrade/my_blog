@@ -230,7 +230,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                     }`}
                   >
                     {link.label}
-                    {isActive && <span className="absolute bottom-0 left-2 h-0.5 w-8 bg-terracotta" aria-hidden="true" />}
+                    {isActive && <span className="mobile-drawer-indicator" aria-hidden="true" />}
                   </Link>
                 );
               })}

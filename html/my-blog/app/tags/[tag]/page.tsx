@@ -23,7 +23,7 @@ export default async function TagPage({
   return (
     <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground"
       style={{ paddingBottom: '3rem' }}>
-      <div className="w-full max-w-[840px] px-8 flex flex-col">
+      <div className="secondary-page-shell w-full max-w-[840px] flex flex-col">
         <header style={{ marginTop: '6vh', marginBottom: '4vh' }}>
           <Link
             href="/article"

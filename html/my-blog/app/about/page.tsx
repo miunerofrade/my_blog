@@ -8,7 +8,7 @@ export default function AboutPage() {
       className="flex min-h-screen flex-col items-center bg-transparent text-foreground selection:bg-terracotta selection:text-background"
       style={{ paddingBottom: '3rem' }}
     >
-      <div className="w-full max-w-[1080px] px-8 flex flex-col">
+      <div className="secondary-page-shell w-full max-w-[1080px] flex flex-col">
         <header style={{ marginTop: '6vh', marginBottom: '4vh' }}>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
