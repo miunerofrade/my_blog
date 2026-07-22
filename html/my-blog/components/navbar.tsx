@@ -15,6 +15,7 @@ const NAV_LINKS = [
 ] as const;
 
 type NavigationLink = (typeof NAV_LINKS)[number];
+type MobileHeading = { id: string; text: string; level: number };
 
 function isRouteMatch(pathname: string, route: string) {
   return route === "/" ? pathname === route : pathname === route || pathname.startsWith(`${route}/`);
@@ -81,6 +82,61 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
   const enterTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const activeNavigationHref = getActiveNavigationHref(pathname);
+  const [mobileHeadings, setMobileHeadings] = useState<MobileHeading[]>([]);
+  const [activeMobileHeading, setActiveMobileHeading] = useState("");
+
+  useEffect(() => {
+    if (!pathname.startsWith("/article/") || pathname === "/article/") {
+      return;
+    }
+
+    const collectHeadings = () => {
+      const next = Array.from(document.querySelectorAll<HTMLElement>(".article-content h2, .article-content h3"))
+        .filter((heading) => heading.id)
+        .map((heading) => ({
+          id: heading.id,
+          text: heading.textContent?.trim() ?? "",
+          level: heading.tagName === "H3" ? 3 : 2,
+        }))
+        .filter((heading) => heading.text);
+      setMobileHeadings(next);
+    };
+
+    collectHeadings();
+    const observer = new MutationObserver(collectHeadings);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  const visibleMobileHeadings = pathname.startsWith("/article/") ? mobileHeadings : [];
+
+  useEffect(() => {
+    if (mobileHeadings.length === 0) return;
+    const updateActive = () => {
+      let current = "";
+      for (const heading of mobileHeadings) {
+        const element = document.getElementById(heading.id);
+        if (element && element.getBoundingClientRect().top <= 97) current = heading.id;
+      }
+      setActiveMobileHeading(current);
+    };
+    updateActive();
+    window.addEventListener("scroll", updateActive, { passive: true });
+    return () => window.removeEventListener("scroll", updateActive);
+  }, [mobileHeadings]);
+
+  const navigateMobileHeading = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    event.preventDefault();
+    const target = document.getElementById(id);
+    if (!target) return;
+    setActiveMobileHeading(id);
+    window.history.pushState(null, "", `#${id}`);
+    window.scrollTo({
+      top: Math.max(0, window.scrollY + target.getBoundingClientRect().top - 96),
+      behavior: "smooth",
+    });
+    setMobileOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -141,7 +197,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       <div className="mobile-navbar-shell w-full max-w-[1080px] h-full flex items-center justify-between">
 
         <div className="flex-1 flex justify-start min-w-0">
-          <Link href="/" onClick={() => setMobileOpen(false)} className="text-xl font-black tracking-[-0.5px] text-foreground">
+          <Link href="/" onClick={() => setMobileOpen(false)} className="text-xl font-semibold tracking-normal text-foreground">
             Miunerofrade
           </Link>
         </div>
@@ -235,6 +291,24 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                 );
               })}
               </nav>
+              {visibleMobileHeadings.length > 0 && (
+                <section className="mobile-drawer-toc" aria-label="文章目录">
+                  <p className="mobile-drawer-toc-title">本页目录</p>
+                  <nav className="mobile-drawer-toc-nav">
+                    {visibleMobileHeadings.map((heading) => (
+                      <a
+                        key={heading.id}
+                        href={`#${heading.id}`}
+                        onClick={(event) => navigateMobileHeading(event, heading.id)}
+                        className={`mobile-drawer-toc-link ${activeMobileHeading === heading.id ? "is-active" : ""}`}
+                        style={{ paddingLeft: heading.level === 3 ? "1rem" : undefined }}
+                      >
+                        {heading.text}
+                      </a>
+                    ))}
+                  </nav>
+                </section>
+              )}
             </motion.aside>
           </motion.div>
         )}

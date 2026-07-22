@@ -637,6 +637,46 @@ body {
   color: var(--color-terracotta);
 }
 
+.mobile-drawer-toc {
+  flex: 1;
+  min-height: 0;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+  overflow-y: auto;
+}
+
+.mobile-drawer-toc-title {
+  margin: 0 0 0.7rem;
+  color: color-mix(in srgb, var(--text-color) 45%, transparent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mobile-drawer-toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.mobile-drawer-toc-link {
+  display: block;
+  padding-block: 0.45rem;
+  color: color-mix(in srgb, var(--text-color) 62%, transparent);
+  font-family: var(--font-noto-serif-sc), "Noto Serif SC", serif;
+  font-size: 0.98rem;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.mobile-drawer-toc-link:hover,
+.mobile-drawer-toc-link.is-active {
+  color: var(--color-terracotta);
+}
+
 .mobile-drawer-indicator {
   position: absolute;
   right: 0;
