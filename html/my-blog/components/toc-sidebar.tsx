@@ -74,10 +74,11 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
       <span
         style={{
           display: 'block',
-          fontSize: '0.75rem',
+          fontSize: '0.82rem',
           fontWeight: 900,
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
+          fontFamily: 'var(--font-playfair), "Playfair Display", var(--font-noto-serif-sc), "Noto Serif SC", serif',
           color: 'var(--foreground-rgb, 0, 0, 0)',
           opacity: 0.36,
           marginBottom: '1rem',
@@ -95,9 +96,10 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
               onClick={(event) => navigateToHeading(event, h.id)}
               style={{
                 display: 'block',
-                fontSize: '0.75rem',
-                lineHeight: 1.35,
+                fontSize: '0.9rem',
+                lineHeight: 1.5,
                 letterSpacing: '0.02em',
+                fontFamily: 'var(--font-noto-serif-sc), "Noto Serif SC", var(--font-playfair), "Playfair Display", serif',
                 paddingLeft: h.level === 3 ? '1rem' : '0',
                 paddingTop: '0.25rem',
                 paddingBottom: '0.25rem',
