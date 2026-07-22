@@ -95,6 +95,20 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [mobileOpen]);
+
   const handleArticleEnter = () => {
     clearTimeout(leaveTimer.current);
     if (recentPosts.length === 0) return;
@@ -124,7 +138,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       `}
       style={megaOpen ? { backgroundColor: 'var(--background, var(--bg-color))' } : {}}
     >
-      <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-4 md:px-6">
+      <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-6 md:px-6">
 
         <div className="flex-1 flex justify-start min-w-0">
           <Link href="/" onClick={() => setMobileOpen(false)} className="text-xl font-black tracking-[-0.5px] text-foreground">
@@ -168,14 +182,41 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            id="mobile-navigation"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            className="absolute left-0 top-full w-full overflow-hidden border-b border-foreground/10 bg-background/95 shadow-lg backdrop-blur-md md:hidden"
+            className="fixed inset-0 z-[200] md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            <nav className="mx-auto flex w-full max-w-[1080px] flex-col px-4 py-3" aria-label="移动端导航">
+            <button
+              type="button"
+              className="absolute inset-0 h-full w-full cursor-default bg-black/25 backdrop-blur-[2px]"
+              aria-label="关闭导航菜单"
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.aside
+              id="mobile-navigation"
+              role="dialog"
+              aria-modal="true"
+              aria-label="移动端导航"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 360, damping: 34 }}
+              className="absolute right-0 top-0 flex h-dvh w-[68vw] max-w-[22rem] flex-col border-l border-foreground/10 bg-background/95 px-6 pb-8 pt-6 shadow-2xl backdrop-blur-xl"
+            >
+              <div className="flex items-center justify-between border-b border-foreground/10 pb-5">
+                <span className="font-playfair text-lg font-bold text-foreground">Navigation<span className="text-terracotta">.</span></span>
+                <button
+                  type="button"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-terracotta"
+                  aria-label="关闭导航菜单"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <X size={21} strokeWidth={1.8} />
+                </button>
+              </div>
+              <nav className="flex flex-col pt-5" aria-label="移动端导航">
               {NAV_LINKS.map((link) => {
                 const isActive = activeNavigationHref === link.href;
                 return (
@@ -184,7 +225,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative border-b border-foreground/10 px-2 py-3 text-base font-bold tracking-widest transition-colors last:border-b-0 ${
+                    className={`relative border-b border-foreground/10 px-2 py-4 text-base font-bold tracking-widest transition-colors last:border-b-0 ${
                       isActive ? "text-terracotta" : "text-foreground/75 hover:text-terracotta"
                     }`}
                   >
@@ -193,7 +234,8 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                   </Link>
                 );
               })}
-            </nav>
+              </nav>
+            </motion.aside>
           </motion.div>
         )}
       </AnimatePresence>
