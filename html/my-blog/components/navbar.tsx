@@ -138,7 +138,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       `}
       style={megaOpen ? { backgroundColor: 'var(--background, var(--bg-color))' } : {}}
     >
-      <div className="w-full max-w-[1080px] h-full flex items-center justify-between px-8 md:px-6">
+      <div className="mobile-navbar-shell w-full max-w-[1080px] h-full flex items-center justify-between">
 
         <div className="flex-1 flex justify-start min-w-0">
           <Link href="/" onClick={() => setMobileOpen(false)} className="text-xl font-black tracking-[-0.5px] text-foreground">
@@ -190,7 +190,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           >
             <button
               type="button"
-              className="absolute inset-0 h-full w-full cursor-default bg-black/25 backdrop-blur-[2px]"
+              className="mobile-drawer-backdrop"
               aria-label="关闭导航菜单"
               onClick={() => setMobileOpen(false)}
             />
