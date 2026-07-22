@@ -15,21 +15,10 @@ export default function ArticleLayout({
 
   return (
     <>
-      <div
-        className="w-full px-8 flex justify-center"
-        style={{
-          maxWidth: showTOC ? '1200px' : '1080px',
-          margin: '0 auto',
-          gap: showTOC ? '5rem' : '0',
-        }}
-      >
+      <div className={`article-page-shell article-detail-shell${showTOC ? "" : " article-page-shell-single"}`}>
         <div
           ref={mdxRef}
-          className="min-w-0 flex-1 flex flex-col"
-          style={{
-            maxWidth: showTOC ? '720px' : '840px',
-            gap: '1.5rem',
-          }}
+          className="article-main-column min-w-0 flex flex-col"
         >
           {children}
         </div>

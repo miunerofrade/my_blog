@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTheme } from "@teispace/next-themes";
+import { motion } from "framer-motion";
+import MediaLightbox from "@/components/media-lightbox";
 
 const oneDarkTheme = {
   background: "transparent",
@@ -83,6 +85,9 @@ function normalizeSvgSize(svg: string) {
 export function Mermaid({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [rendered, setRendered] = useState<string>("");
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const layoutId = `mermaid-zoom-${useId()}`;
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {
@@ -90,6 +95,7 @@ export function Mermaid({ chart }: { chart: string }) {
 
     const renderChart = async () => {
       try {
+        setHasError(false);
         const mermaid = (await import("mermaid")).default;
         const isDark = resolvedTheme === "dark";
         mermaid.initialize({
@@ -110,7 +116,10 @@ export function Mermaid({ chart }: { chart: string }) {
         if (!cancelled) setRendered(normalizeSvgSize(result.svg));
       } catch (error) {
         console.error(error);
-        if (!cancelled) setRendered(`<div class="text-red-500">Mermaid Error</div>`);
+        if (!cancelled) {
+          setHasError(true);
+          setRendered(`<div class="text-red-500">Mermaid Error</div>`);
+        }
       }
     };
 
@@ -120,11 +129,41 @@ export function Mermaid({ chart }: { chart: string }) {
     };
   }, [chart, resolvedTheme]);
 
+  const openZoom = () => {
+    if (rendered && !hasError) setIsZoomed(true);
+  };
+
   return (
-    <div
-      ref={ref}
-      className="my-8 flex justify-center overflow-x-auto rounded-lg border border-[var(--border-color)] bg-transparent p-4 [&_svg]:block [&_svg]:h-auto [&_svg]:max-w-full"
-      dangerouslySetInnerHTML={{ __html: rendered }}
-    />
+    <>
+      <motion.div
+        layoutId={layoutId}
+        ref={ref}
+        role={rendered && !hasError ? "button" : undefined}
+        tabIndex={rendered && !hasError ? 0 : undefined}
+        aria-label={rendered && !hasError ? "点击放大 Mermaid 图表" : undefined}
+        onClick={openZoom}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openZoom();
+          }
+        }}
+        className="my-8 flex cursor-zoom-in justify-center overflow-x-auto rounded-lg border border-[var(--border-color)] bg-transparent p-4 transition-shadow hover:shadow-md [&_svg]:block [&_svg]:h-auto [&_svg]:max-w-full"
+        dangerouslySetInnerHTML={{ __html: rendered }}
+      />
+
+      <MediaLightbox
+        isOpen={isZoomed}
+        onClose={() => setIsZoomed(false)}
+        label="放大的 Mermaid 图表"
+      >
+        <motion.span
+          layoutId={layoutId}
+          transition={{ type: "spring", stiffness: 320, damping: 30 }}
+          className="relative z-10 flex max-h-[90vh] max-w-[90vw] items-center justify-center overflow-auto rounded-2xl bg-background/60 p-6 shadow-2xl [&_svg]:block [&_svg]:h-auto [&_svg]:max-h-[82vh] [&_svg]:max-w-[84vw]"
+          dangerouslySetInnerHTML={{ __html: rendered }}
+        />
+      </MediaLightbox>
+    </>
   );
 }

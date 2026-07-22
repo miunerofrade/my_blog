@@ -24,10 +24,10 @@ export default function ArticleClient({ initialData = [] }: Props) {
   return (
     <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground"
       style={{ paddingBottom: '3rem' }}>
-      <div className="w-full max-w-[1080px] px-8 flex flex-col md:flex-row items-start gap-12 md:gap-20">
+      <div className="article-page-shell">
         
         {/* 主体内容区 */}
-        <div className="flex-1 flex flex-col w-full max-w-[840px]">
+        <div className="article-main-column">
           <header 
             style={{ marginTop: '6vh', marginBottom: '4vh' }} 
             className="flex flex-row items-end justify-between"
@@ -115,48 +115,29 @@ export default function ArticleClient({ initialData = [] }: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
-                    className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6 z-10" : "flex flex-col z-10"}
+                    className={viewMode === 'grid' ? "article-card-grid z-10" : "flex flex-col z-10"}
                   >
                     {group.posts.map((post) =>
                       viewMode === 'grid' ? (
-                        <Link key={post.slug} href={`/article/${post.slug}`}>
-                          <div
-                            style={{ padding: '40px' }}
-                            className="
-                              group relative overflow-hidden cursor-pointer
-                              flex flex-col justify-between h-full
-                              rounded-2xl border border-foreground/5
-                              bg-foreground/2 backdrop-blur-md
-                              hover:bg-foreground/4 hover:border-terracotta/30
-                              hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]
-                              transition-all duration-500 ease-out hover:-translate-y-1.5
-                            "
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-br from-terracotta/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div className="absolute -top-12 -right-12 w-48 h-48 bg-terracotta/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-                            <div className="relative flex flex-col gap-4">
-                              <div className="flex items-center gap-3 text-xs font-bold tracking-widest text-foreground/40 uppercase">
-                                <span>{post.date}</span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-terracotta/40"></span>
-                                <span>{post.readTime}</span>
-                              </div>
-
-                              <h3 className="relative font-black leading-tight tracking-tight group-hover:text-terracotta transition-colors duration-300 text-2xl">
+                        <Link
+                          key={post.slug}
+                          href={`/article/${post.slug}`}
+                          className="article-grid-card group"
+                        >
+                          <span className="article-grid-card-copy">
+                              <h3 className="article-grid-card-title">
                                 {post.title}
                               </h3>
-                            </div>
-
-                            <div className="relative flex items-end justify-between gap-8 mt-10">
-                              <p className="text-foreground/60 leading-[1.8] font-medium text-sm line-clamp-2 max-w-[85%]">
+                              <span className="article-grid-card-description">
                                 {post.excerpt}
-                              </p>
-
-                              <span className="text-terracotta opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out font-black text-3xl shrink-0" aria-hidden="true">
-                                →
                               </span>
-                            </div>
-                          </div>
+                          </span>
+
+                          <span className="article-grid-card-metadata">
+                            <time dateTime={post.date}>{post.date}</time>
+                            <span className="article-grid-card-dot" aria-hidden="true" />
+                            <span>{post.readTime}</span>
+                          </span>
                         </Link>
                       ) : (
                         <PostListItem key={post.slug} post={post} />
@@ -175,7 +156,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           style={{ marginTop: '6vh' }}
-          className="hidden md:flex flex-col sticky top-[15vh] w-28 shrink-0 gap-6"
+          className="article-sidebar-align article-timeline hidden md:flex flex-col sticky top-[15vh] gap-6"
         >
           <span className="text-xs font-black tracking-widest text-foreground/30 uppercase">
             Timeline

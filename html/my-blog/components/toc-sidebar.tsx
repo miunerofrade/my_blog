@@ -62,7 +62,7 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
 
   return (
     <aside
-      className="hidden lg:block"
+      className="article-sidebar-align article-toc-sidebar hidden lg:block"
       style={{
         width: '12rem',
         flexShrink: 0,
@@ -79,7 +79,7 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
           color: 'var(--foreground-rgb, 0, 0, 0)',
-          opacity: 0.25,
+          opacity: 0.36,
           marginBottom: '1rem',
         }}
       >
@@ -103,7 +103,7 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
                 paddingBottom: '0.25rem',
                 color: isActive
                   ? 'rgb(217, 119, 87)'
-                  : 'rgba(128, 128, 128, 0.5)',
+                  : 'rgba(128, 128, 128, 0.66)',
                 fontWeight: isActive ? 600 : 400,
                 textDecoration: 'none',
                 transition: 'color 0.2s',
@@ -115,7 +115,7 @@ export default function TOCSidebar({ headings }: { headings: HeadingItem[] }) {
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.color = 'rgba(128, 128, 128, 0.5)';
+                  e.currentTarget.style.color = 'rgba(128, 128, 128, 0.66)';
                 }
               }}
             >

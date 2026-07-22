@@ -37,10 +37,10 @@ export default function PostListItem({ post }: { post: PostData }) {
           {post.date}
         </span>
         <div className="flex-1 min-w-0 pr-4 md:pr-8 flex flex-col gap-1.5">
-          <h3 className="text-base md:text-lg font-bold truncate text-foreground group-hover:text-terracotta transition-colors duration-300">
+          <h3 className="article-list-title text-base md:text-lg font-bold truncate text-foreground group-hover:text-terracotta transition-colors duration-300">
             {post.title}
           </h3>
-          <p className="text-sm text-foreground/50 line-clamp-1 md:line-clamp-2 leading-relaxed">
+          <p className="font-noto-serif-sc text-sm text-foreground/50 line-clamp-1 md:line-clamp-2 leading-relaxed">
             {post.excerpt}
           </p>
         </div>

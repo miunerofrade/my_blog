@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -7,14 +7,69 @@ import ThemeToggle from "./theme-toggle";
 import type { PostData } from "@/lib/posts";
 
 const NAV_LINKS = [
-  { href: "/", label: "首页" },
-  { href: "/article", label: "文章" },
-  { href: "/about", label: "关于" },
-  { href: "/links", label: "友链" },
-];
+  { href: "/", label: "首页", routes: ["/"] },
+  { href: "/article", label: "文章", routes: ["/article", "/tags"] },
+  { href: "/about", label: "关于", routes: ["/about"] },
+  { href: "/links", label: "友链", routes: ["/links"] },
+] as const;
+
+type NavigationLink = (typeof NAV_LINKS)[number];
+
+function isRouteMatch(pathname: string, route: string) {
+  return route === "/" ? pathname === route : pathname === route || pathname.startsWith(`${route}/`);
+}
+
+function getActiveNavigationHref(pathname: string) {
+  return NAV_LINKS.find((link) =>
+    link.routes.some((route) => isRouteMatch(pathname, route)),
+  )?.href;
+}
 
 interface NavbarProps {
   recentPosts?: PostData[];
+}
+
+function NavbarLink({
+  link,
+  isActive,
+  onNavigate,
+  onArticleEnter,
+  onArticleLeave,
+}: {
+  link: NavigationLink;
+  isActive: boolean;
+  onNavigate: () => void;
+  onArticleEnter: () => void;
+  onArticleLeave: () => void;
+}) {
+  const isArticle = link.href === "/article";
+
+  return (
+    <div
+      onMouseEnter={isArticle ? onArticleEnter : undefined}
+      onMouseLeave={isArticle ? onArticleLeave : undefined}
+    >
+      <Link
+        href={link.href}
+        onClick={onNavigate}
+        aria-current={isActive ? "page" : undefined}
+        className={`relative block py-1 transition-colors duration-300 ${
+          isActive
+            ? "text-terracotta"
+            : "text-foreground/80 hover:text-terracotta"
+        }`}
+      >
+        {link.label}
+        {isActive && (
+          <motion.span
+            layoutId="primary-navigation-indicator"
+            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full bg-terracotta"
+            transition={{ type: "spring", stiffness: 500, damping: 38, mass: 0.7 }}
+          />
+        )}
+      </Link>
+    </div>
+  );
 }
 
 export default function Navbar({ recentPosts = [] }: NavbarProps) {
@@ -23,11 +78,19 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
   const pathname = usePathname();
   const enterTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const activeNavigationHref = getActiveNavigationHref(pathname);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(enterTimer.current);
+      clearTimeout(leaveTimer.current);
+    };
   }, []);
 
   const handleArticleEnter = () => {
@@ -67,44 +130,20 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           </Link>
         </div>
 
-        <div
-          className="flex-1 h-full flex items-center justify-center gap-12 relative text-base font-bold tracking-widest uppercase"
-        >
-          {NAV_LINKS.map((link) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
-            const isArticle = link.href === "/article";
-
-            return (
-              <div
+        <LayoutGroup id="primary-navigation">
+          <div className="relative flex h-full flex-1 items-center justify-center gap-12 text-base font-bold tracking-widest uppercase">
+            {NAV_LINKS.map((link) => (
+              <NavbarLink
                 key={link.href}
-                data-active={isActive}
-                onMouseEnter={isArticle ? handleArticleEnter : undefined}
-                onMouseLeave={isArticle ? handleArticleLeave : undefined}
-              >
-                <Link
-                  href={link.href}
-                  onClick={() => setMegaOpen(false)}
-                  className={`relative py-1 transition-colors duration-300 block ${
-                    isActive
-                      ? "text-terracotta"
-                      : "text-foreground/80 hover:text-terracotta"
-                  }`}
-                >
-                  {link.label}
-                  {isActive && (
-                    <motion.span
-                      layoutId="active-nav-indicator"
-                      className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-terracotta rounded-full"
-                    />
-                  )}
-                </Link>
-              </div>
-            );
-          })}
-        </div>
+                link={link}
+                isActive={activeNavigationHref === link.href}
+                onNavigate={() => setMegaOpen(false)}
+                onArticleEnter={handleArticleEnter}
+                onArticleLeave={handleArticleLeave}
+              />
+            ))}
+          </div>
+        </LayoutGroup>
 
         <div className="flex-1 flex justify-end">
           <ThemeToggle />

@@ -207,7 +207,7 @@ export default async function PostPage({
           </header>
 
           <ReadingProgress>
-            <div className="prose prose-lg dark:prose-invert prose-neutral max-w-none [&>*:first-child]:!mt-0
+            <div className="article-content prose prose-lg dark:prose-invert prose-neutral max-w-none
             prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground dark:prose-headings:text-foreground
             prose-a:text-terracotta dark:prose-a:text-terracotta
             prose-p:leading-8 prose-p:text-foreground dark:prose-p:text-foreground

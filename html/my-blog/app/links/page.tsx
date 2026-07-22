@@ -12,13 +12,7 @@ type LinkItem = {
 };
 
 const LINKS_DATA: LinkItem[] = [
-  { name: "John Doe", desc: "A frontend developer crafting beautiful UIs.", url: "https://example.com" },
-  { name: "Jane Smith", desc: "Design engineer exploring interactive design.", url: "https://jane.design" },
-  { name: "Alex Chen", desc: "Full-stack developer & open source enthusiast.", url: "https://github.com",avatar: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
-  { name: "Mia Johnson", desc: "Writer, thinker, and indie hacker.", url: "https://medium.com" },
-  { name: "Lucas Wang", desc: "Building cool stuff with Rust & WebAssembly.", url: "https://rust-lang.org" },
-  { name: "Sophia Kim", desc: "UI/UX designer with a passion for typography.", url: "https://dribbble.com" },
-  { name: "哔哩哔哩", desc: "中国年轻世代高度聚集的文化社区和视频平台。", url: "https://www.bilibili.com" },
+  { name: "GitHub", desc: "全球最大的开源软件开发与协作平台。", url: "https://github.com/miunerofrade", avatar: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
 ];
 
 const containerVariants = {
@@ -41,14 +35,14 @@ function FaviconImg({ item }: { item: LinkItem }) {
 
   if (failed) {
     return (
-      <div className="w-14 h-14 rounded-lg shrink-0 overflow-hidden bg-[var(--surface-color)]">
+      <div className="friend-avatar friend-avatar-fallback">
         <Image
           src={`https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=f4f4f5&color=27272a&bold=true&size=128`}
           alt={`${item.name}'s icon`}
           width={56}
           height={56}
           unoptimized
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
     );
@@ -59,14 +53,14 @@ function FaviconImg({ item }: { item: LinkItem }) {
     : `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 
   return (
-    <div className="w-14 h-14 rounded-lg shrink-0 overflow-hidden bg-[var(--surface-color)]">
+    <div className="friend-avatar">
       <Image
         src={src}
         alt={`${item.name}'s icon`}
         width={56}
         height={56}
         unoptimized
-        className="w-full h-full object-cover"
+        className="h-full w-full object-cover"
         onError={() => setFailed(true)}
       />
     </div>
@@ -95,15 +89,16 @@ export default function LinksPage() {
             transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
             className="mt-6 text-lg text-foreground/50 max-w-xl leading-relaxed"
           >
-            Here are some of the brilliant minds I&apos;ve had the pleasure of crossing paths with in the digital world.
+            这里记录着我在数字世界中有幸遇见的朋友们。
           </motion.p>
         </header>
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-16"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          className="friend-grid"
         >
           {LINKS_DATA.map((link) => (
             <motion.a
@@ -112,22 +107,25 @@ export default function LinksPage() {
               target="_blank"
               rel="noopener noreferrer"
               variants={cardVariants}
-              className="group relative flex flex-col rounded-2xl bg-foreground/2 backdrop-blur-md border border-foreground/10 shadow-sm hover:border-terracotta/40 hover:-translate-y-1 transition-all duration-300 ease-out"
-              style={{ padding: '2rem' }}
+              whileHover={{ y: -6 }}
+              whileTap={{ scale: 0.99 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="friend-card group"
             >
-              <div className="flex items-center gap-5">
+              <span className="friend-card-arrow" aria-hidden="true">{"\u2197"}</span>
+
+              <div className="friend-card-header">
                 <FaviconImg item={link} />
-                <span className="text-xl font-black tracking-tight text-foreground group-hover:text-terracotta transition-colors duration-300">
-                  {link.name}
+                <span className="friend-card-identity">
+                  <span className="friend-card-name">{link.name}</span>
+                  <span className="friend-card-domain">
+                    {new URL(link.url).hostname.replace(/^www\./, "")}
+                  </span>
                 </span>
               </div>
 
-              <span className="text-sm text-foreground/60 leading-relaxed" style={{ marginTop: '1.5rem' }}>
+              <span className="friend-card-description">
                 {link.desc}
-              </span>
-
-              <span className="absolute top-8 right-8 text-terracotta/60 group-hover:text-terracotta opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 ease-out font-bold text-xl">
-                ↗
               </span>
             </motion.a>
           ))}

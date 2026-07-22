@@ -36,7 +36,9 @@ export async function getRecentRepositories(): Promise<GitHubRepository[]> {
       },
     );
 
-    if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
+    // Unauthenticated GitHub requests are rate-limited frequently. Recent
+    // focus is optional, so keep the homepage renderable when that happens.
+    if (!response.ok) return [];
 
     const repositories = (await response.json()) as GitHubApiRepository[];
     return repositories
@@ -52,8 +54,7 @@ export async function getRecentRepositories(): Promise<GitHubRepository[]> {
         forks: repository.forks_count,
         pushedAt: repository.pushed_at,
       }));
-  } catch (error) {
-    console.error("Unable to load recent GitHub repositories", error);
+  } catch {
     return [];
   }
 }
