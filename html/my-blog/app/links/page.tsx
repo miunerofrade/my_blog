@@ -140,7 +140,7 @@ export default function LinksPage() {
         >
           <h2 className="text-3xl font-black tracking-tight">如何交换友链？</h2>
           <p className="mt-4 text-foreground/80 leading-relaxed text-lg">
-            如果你也想交换友链，可以按照以下格式在任意页面留言，我会尽快添加：
+            如果你也想交换友链，可以按照以下格式联系我，我会尽快添加：
           </p>
           <ul className="mt-6 text-base text-foreground/85 leading-relaxed">
             <li style={{ marginBottom: '0.5rem' }}><span className="font-semibold text-foreground text-lg">名称：</span><span className="font-medium text-foreground text-xl">Miunerofrade</span></li>
