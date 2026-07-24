@@ -147,6 +147,15 @@ export default function HomePage({
             ))}
           </motion.div>
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.55 }}
+          transition={{ delay: reduceMotion ? 0 : 1.9, duration: 0.5 }}
+          className="cupertino-direction"
+        >
+          Software Engineering · AI Applications · Notes
+        </motion.p>
       </CupertinoSection>
 
       <CupertinoSection className="cupertino-focus cupertino-writings">
