@@ -341,9 +341,9 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
-  gap: 1.5rem;
+  gap: 2.25rem;
   overflow: hidden;
-  padding: 0.65rem 0 1.15rem;
+  padding: 0.9rem 0 1.45rem;
   border: 0;
   border-bottom: 1px solid var(--cupertino-separator);
   border-radius: 0;
@@ -381,13 +381,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.4rem;
+  gap: 0.55rem;
 }
 
 .cupertino-card-title {
   overflow-wrap: anywhere;
   font-family: var(--font-playfair), "Playfair Display", var(--font-noto-serif-sc), "Noto Serif SC", serif;
-  font-size: 1.12rem;
+  font-size: 1.3rem;
   font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0;
@@ -403,7 +403,7 @@ body {
   overflow: hidden;
   color: var(--cupertino-secondary-label);
   font-family: var(--font-noto-serif-sc), "Noto Serif SC", serif;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   font-weight: 400;
   line-height: 1.7;
   -webkit-box-orient: vertical;
@@ -418,7 +418,7 @@ body {
   gap: 0.5rem 0.8rem;
   padding-top: 0.2rem;
   color: var(--cupertino-secondary-label);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 500;
 }
 
@@ -935,8 +935,8 @@ body {
 
   .cupertino-card {
     grid-template-columns: minmax(0, 1fr);
-    gap: 0.45rem;
-    padding-block: 0.75rem 1.1rem;
+    gap: 0.65rem;
+    padding-block: 0.9rem 1.35rem;
   }
 
   .cupertino-metadata {
