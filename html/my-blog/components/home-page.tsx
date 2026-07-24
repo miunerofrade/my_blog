@@ -10,6 +10,7 @@ import {
 import PostListItem from "@/components/post-list-item";
 import type { GitHubRepository } from "@/lib/github";
 import type { PostData } from "@/lib/posts";
+import type { PointerEvent } from "react";
 
 const NAME = "Miunerofrade";
 
@@ -33,6 +34,12 @@ function formatRepositoryDate(value: string) {
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(value));
+}
+
+function updateRepositoryHighlightOrigin(event: PointerEvent<HTMLDivElement>) {
+  const bounds = event.currentTarget.getBoundingClientRect();
+  const position = ((event.clientX - bounds.left) / bounds.width) * 100;
+  event.currentTarget.style.setProperty("--hover-origin", `${position}%`);
 }
 
 export default function HomePage({
@@ -218,6 +225,8 @@ export default function HomePage({
                     visible: { opacity: 1, y: 0 },
                   }}
                   transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                  onPointerEnter={updateRepositoryHighlightOrigin}
+                  onPointerMove={updateRepositoryHighlightOrigin}
                 >
                   <CupertinoCard href={repository.url} external>
                     <span className="cupertino-card-copy">

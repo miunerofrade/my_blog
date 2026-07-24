@@ -363,7 +363,7 @@ body {
   height: 2px;
   background: var(--cupertino-tint);
   transform: scaleX(0);
-  transform-origin: center;
+  transform-origin: var(--hover-origin, 50%) center;
   transition: transform 500ms ease;
 }
 
