@@ -7,7 +7,9 @@ import {
   CupertinoCard,
   CupertinoSection,
 } from "@/components/cupertino";
+import PostListItem from "@/components/post-list-item";
 import type { GitHubRepository } from "@/lib/github";
+import type { PostData } from "@/lib/posts";
 
 const NAME = "Miunerofrade";
 
@@ -33,7 +35,13 @@ function formatRepositoryDate(value: string) {
   }).format(new Date(value));
 }
 
-export default function HomePage({ repositories }: { repositories: GitHubRepository[] }) {
+export default function HomePage({
+  repositories,
+  recentPosts,
+}: {
+  repositories: GitHubRepository[];
+  recentPosts: PostData[];
+}) {
   const reduceMotion = useReducedMotion();
   const [typedLength, setTypedLength] = useState(0);
   const [showPeriod, setShowPeriod] = useState(false);
@@ -106,7 +114,7 @@ export default function HomePage({ repositories }: { repositories: GitHubReposit
             transition={{ delay: reduceMotion ? 0 : 1.65, duration: 0.5 }}
             className="cupertino-welcome"
           >
-            Welcome.
+            不定时悲伤
           </motion.p>
 
           <motion.div
@@ -132,6 +140,48 @@ export default function HomePage({ repositories }: { repositories: GitHubReposit
             ))}
           </motion.div>
         </motion.div>
+      </CupertinoSection>
+
+      <CupertinoSection className="cupertino-focus cupertino-writings">
+        <div className="cupertino-focus-content">
+          <motion.header
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.7 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="cupertino-focus-header"
+          >
+            <p className="cupertino-section-label">WRITING</p>
+            <h2 className="cupertino-focus-title">
+              Recent writings<span className="cupertino-period">.</span>
+            </h2>
+          </motion.header>
+
+          {recentPosts.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="cupertino-writing-list"
+            >
+              <div className="flex flex-col">
+                {recentPosts.map((post) => (
+                  <PostListItem key={post.slug} post={post} />
+                ))}
+              </div>
+
+              <div className="cupertino-view-all-row">
+                <CupertinoButton
+                  href="/article"
+                  className="cupertino-button-link"
+                >
+                  View all writings <span aria-hidden="true">{"\u2192"}</span>
+                </CupertinoButton>
+              </div>
+            </motion.div>
+          )}
+        </div>
       </CupertinoSection>
 
       <CupertinoSection className="cupertino-focus">
