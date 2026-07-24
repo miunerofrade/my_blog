@@ -32,6 +32,11 @@ html pre span[data-line] span {
   -webkit-box-decoration-break: clone;
 }
 
+:not(pre) > code::before,
+:not(pre) > code::after {
+  content: none !important;
+}
+
 html pre {
   padding: 1rem !important;
   border-radius: 1rem !important;
