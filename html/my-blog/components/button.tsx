@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export default function NavButton({
   label,
@@ -16,15 +17,13 @@ export default function NavButton({
     group
     cursor-pointer
     inline-flex items-center justify-center shrink-0 whitespace-nowrap
-    w-auto min-w-[240px] hover:min-w-[270px]
-    h-[60px] hover:h-[63px]
-    px-12 hover:px-16
-    rounded-full border-2
-    text-base md:text-lg tracking-widest uppercase font-black
+    h-12 w-auto min-w-[240px]
+    rounded-xl border-2 px-12
+    text-base md:text-lg leading-6 md:leading-7 tracking-widest uppercase font-black
     transition-all duration-300 ease-out
     ${isPrimary
-      ? "border-terracotta text-terracotta bg-terracotta/5 shadow-[0_0_20px_-5px_rgba(217,119,87,0.4)]"
-      : "bg-transparent border-foreground/30 text-foreground hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5"
+      ? "border-accent bg-accent text-accent-foreground shadow-sm hover:shadow-md"
+      : "border-border bg-transparent text-foreground hover:border-accent hover:bg-surface-hover hover:text-accent"
     }
   `;
 
@@ -36,7 +35,7 @@ export default function NavButton({
         group-hover:max-w-[24px] group-hover:opacity-100 group-hover:translate-x-0
         transition-all duration-300 ease-out
       " aria-hidden="true">
-        →
+        <ArrowRight size={24} strokeWidth={2} />
       </span>
     </div>
   );

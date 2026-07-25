@@ -14,7 +14,7 @@ export default function AboutPageContent({
 }) {
   return (
     <main
-      className="flex min-h-screen flex-col items-center bg-transparent text-foreground selection:bg-terracotta selection:text-background"
+      className="flex min-h-screen flex-col items-center bg-transparent text-foreground selection:bg-accent selection:text-accent-foreground"
       style={{ paddingBottom: "3rem" }}
     >
       <div className="secondary-page-shell flex w-full max-w-[1080px] flex-col">
@@ -23,15 +23,15 @@ export default function AboutPageContent({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="font-playfair text-[clamp(2rem,4.5vw,4.5rem)] font-bold tracking-normal uppercase md:text-[clamp(2.5rem,3vw,5rem)]"
+            className="font-playfair text-5xl font-bold uppercase leading-[60px] tracking-normal md:text-[80px] md:leading-[96px]"
           >
-            {title}<span className="text-terracotta">.</span>
+            {title}<span className="text-accent">.</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 max-w-xl text-lg leading-relaxed text-foreground/50"
+            className="mt-6 max-w-xl text-lg leading-7 text-muted"
           >
             {subtitle}
           </motion.p>
@@ -43,7 +43,7 @@ export default function AboutPageContent({
           transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="about-content prose prose-lg max-w-none prose-neutral dark:prose-invert
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
-          prose-a:text-terracotta prose-p:leading-8 prose-p:text-foreground dark:prose-p:text-foreground
+          prose-a:text-accent prose-p:leading-6 prose-p:text-foreground dark:prose-p:text-foreground
           prose-strong:text-foreground prose-ul:list-inside prose-ul:pl-5 prose-li:text-foreground"
           style={{ marginTop: "1rem" }}
         >

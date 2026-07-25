@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./theme-toggle";
+import CommandMenu, { type SearchPostEntry } from "./command-menu";
+import IconButton from "./icon-button";
 import type { PostData } from "@/lib/posts";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu, Search, X } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "首页", routes: ["/"] },
@@ -29,6 +31,7 @@ function getActiveNavigationHref(pathname: string) {
 
 interface NavbarProps {
   recentPosts?: PostData[];
+  searchPosts: SearchPostEntry[];
 }
 
 function NavbarLink({
@@ -57,15 +60,15 @@ function NavbarLink({
         aria-current={isActive ? "page" : undefined}
         className={`relative block py-1 transition-colors duration-300 ${
           isActive
-            ? "text-terracotta"
-            : "text-foreground/80 hover:text-terracotta"
+            ? "text-accent"
+            : "text-foreground hover:text-accent"
         }`}
       >
         {link.label}
         {isActive && (
           <motion.span
             layoutId="primary-navigation-indicator"
-            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full bg-terracotta"
+            className="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full bg-accent"
             transition={{ type: "spring", stiffness: 500, damping: 38, mass: 0.7 }}
           />
         )}
@@ -74,16 +77,23 @@ function NavbarLink({
   );
 }
 
-export default function Navbar({ recentPosts = [] }: NavbarProps) {
+export default function Navbar({ recentPosts = [], searchPosts }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchTriggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const enterTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const activeNavigationHref = getActiveNavigationHref(pathname);
   const [mobileHeadings, setMobileHeadings] = useState<MobileHeading[]>([]);
   const [activeMobileHeading, setActiveMobileHeading] = useState("");
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setSearchOpen(false));
+    return () => cancelAnimationFrame(frame);
+  }, [pathname]);
 
   useEffect(() => {
     if (!pathname.startsWith("/article/") || pathname === "/article/") {
@@ -116,7 +126,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       let current = "";
       for (const heading of mobileHeadings) {
         const element = document.getElementById(heading.id);
-        if (element && element.getBoundingClientRect().top <= 97) current = heading.id;
+        if (element && element.getBoundingClientRect().top <= 81) current = heading.id;
       }
       setActiveMobileHeading(current);
     };
@@ -132,7 +142,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
     setActiveMobileHeading(id);
     window.history.pushState(null, "", `#${id}`);
     window.scrollTo({
-      top: Math.max(0, window.scrollY + target.getBoundingClientRect().top - 96),
+      top: Math.max(0, window.scrollY + target.getBoundingClientRect().top - 80),
       behavior: "smooth",
     });
     setMobileOpen(false);
@@ -167,7 +177,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
 
   const handleArticleEnter = () => {
     clearTimeout(leaveTimer.current);
-    if (recentPosts.length === 0) return;
+    if (recentPosts.length === 0 || searchOpen) return;
     enterTimer.current = setTimeout(() => setMegaOpen(true), 250);
   };
 
@@ -182,7 +192,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
       className={`
-        w-full h-[50px] flex justify-center sticky top-0 z-[100] relative
+        w-full h-14 flex justify-center sticky top-0 z-[100]
         border-b border-foreground/10
         transition-all duration-300 ease-out
         ${megaOpen
@@ -217,23 +227,48 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
           </div>
         </LayoutGroup>
 
-        <div className="flex-1 flex justify-end items-center gap-1">
+        <div className="flex-1 flex justify-end items-center gap-2">
+          <IconButton
+            ref={searchTriggerRef}
+            label={searchOpen ? "关闭文章搜索" : "打开文章搜索"}
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setSearchOpen((open) => !open);
+              setMegaOpen(false);
+              setMobileOpen(false);
+            }}
+          >
+            <Search aria-hidden="true" size={24} strokeWidth={2} />
+          </IconButton>
           <ThemeToggle />
-          <button
-            type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-terracotta md:hidden"
-            aria-label={mobileOpen ? "关闭导航菜单" : "打开导航菜单"}
+          <IconButton
+            className="md:hidden"
+            label={mobileOpen ? "关闭导航菜单" : "打开导航菜单"}
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation"
             onClick={() => {
               setMobileOpen((open) => !open);
               setMegaOpen(false);
+              setSearchOpen(false);
             }}
           >
-            {mobileOpen ? <X size={21} strokeWidth={1.8} /> : <Menu size={21} strokeWidth={1.8} />}
-          </button>
+            {mobileOpen ? <X aria-hidden="true" size={24} strokeWidth={2} /> : <Menu aria-hidden="true" size={24} strokeWidth={2} />}
+          </IconButton>
         </div>
       </div>
+
+      <CommandMenu
+        posts={searchPosts}
+        open={searchOpen}
+        onOpenChange={(open) => {
+          setSearchOpen(open);
+          if (open) {
+            setMegaOpen(false);
+            setMobileOpen(false);
+          }
+        }}
+        triggerRef={searchTriggerRef}
+      />
 
       <AnimatePresence>
         {mobileOpen && (
@@ -262,15 +297,13 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
               className="mobile-drawer"
             >
               <div className="mobile-drawer-header">
-                <span className="mobile-drawer-title">Navigation<span className="text-terracotta">.</span></span>
-                <button
-                  type="button"
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-terracotta"
-                  aria-label="关闭导航菜单"
+                <span className="mobile-drawer-title">Navigation<span className="text-accent">.</span></span>
+                <IconButton
+                  label="关闭导航菜单"
                   onClick={() => setMobileOpen(false)}
                 >
-                  <X size={21} strokeWidth={1.8} />
-                </button>
+                  <X aria-hidden="true" size={24} strokeWidth={2} />
+                </IconButton>
               </div>
               <nav className="mobile-drawer-nav" aria-label="移动端导航">
               {NAV_LINKS.map((link) => {
@@ -282,7 +315,7 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                     onClick={() => setMobileOpen(false)}
                     aria-current={isActive ? "page" : undefined}
                     className={`mobile-drawer-link ${
-                      isActive ? "text-terracotta" : "text-foreground/75 hover:text-terracotta"
+                      isActive ? "text-accent" : "text-muted hover:text-accent"
                     }`}
                   >
                     {link.label}
@@ -338,14 +371,16 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
               transition={{ duration: 0.3, delay: 0.15, ease: "easeOut" }}
             >
               <div style={{ width: '200px', flexShrink: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <span className="text-xs font-black tracking-widest text-foreground/40 uppercase">
+                <span className="text-xs font-black uppercase leading-[18px] tracking-widest text-muted">
                   LATEST ARTICLES
                 </span>
                 <Link
                   href="/article"
-                  className="text-xs font-bold tracking-widest text-terracotta hover:text-terracotta/70 transition-colors"
+                  className="inline-flex min-h-11 items-center rounded-lg text-xs font-bold leading-[18px] tracking-widest text-accent transition-colors hover:bg-surface-hover"
                 >
-                  查看全部文章 →
+                  <span className="inline-flex items-center gap-2">
+                    查看全部文章 <ArrowRight aria-hidden="true" size={24} strokeWidth={2} />
+                  </span>
                 </Link>
               </div>
 
@@ -355,12 +390,12 @@ export default function Navbar({ recentPosts = [] }: NavbarProps) {
                     key={post.slug}
                     href={`/article/${post.slug}`}
                     className="group"
-                    style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+                    style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
                   >
-                    <span className="text-xs font-medium text-foreground/40 border-b border-foreground/10" style={{ paddingBottom: '0.5rem' }}>
+                    <span className="border-b border-border pb-2 text-xs font-medium leading-[18px] text-muted">
                       {post.date}
                     </span>
-                    <h3 className="text-sm font-bold leading-relaxed text-foreground group-hover:text-terracotta transition-colors line-clamp-2">
+                    <h3 className="line-clamp-2 text-sm font-bold leading-[22px] text-foreground transition-colors group-hover:text-accent">
                       {post.title}
                     </h3>
                   </Link>

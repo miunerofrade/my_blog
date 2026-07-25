@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import {
   CupertinoButton,
   CupertinoCard,
@@ -117,7 +118,7 @@ export default function HomePage({
 
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: reduceMotion ? 0 : 1.65, duration: 0.5 }}
             className="cupertino-welcome"
           >
@@ -140,7 +141,11 @@ export default function HomePage({
                 <span className="cupertino-button-content">
                   <span>{item.label}</span>
                   <span className="cupertino-button-arrow" aria-hidden="true">
-                    {"\u2192"}
+                    {item.external ? (
+                      <ExternalLink size={24} strokeWidth={2} />
+                    ) : (
+                      <ArrowRight size={24} strokeWidth={2} />
+                    )}
                   </span>
                 </span>
               </CupertinoButton>
@@ -150,7 +155,7 @@ export default function HomePage({
 
         <motion.p
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.55 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: reduceMotion ? 0 : 1.9, duration: 0.5 }}
           className="cupertino-direction"
         >
@@ -192,7 +197,7 @@ export default function HomePage({
                   href="/article"
                   className="cupertino-button-link"
                 >
-                  View all writings <span aria-hidden="true">{"\u2192"}</span>
+                  View all writings <ArrowRight aria-hidden="true" size={24} strokeWidth={2} />
                 </CupertinoButton>
               </div>
             </motion.div>
@@ -288,7 +293,7 @@ export default function HomePage({
                   external
                   className="cupertino-button-link"
                 >
-                  View all repositories <span aria-hidden="true">{"\u2197"}</span>
+                  View all repositories <ExternalLink aria-hidden="true" size={24} strokeWidth={2} />
                 </CupertinoButton>
               </motion.div>
             </motion.div>

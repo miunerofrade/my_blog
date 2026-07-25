@@ -1,5 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
+import { Grid2X2, List } from "lucide-react";
+import IconButton from "@/components/icon-button";
 import { useState } from "react";
 import Link from "next/link";
 import { PostData } from "@/lib/posts";
@@ -15,7 +17,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
   // 防止初次渲染时因为没有数据而崩溃
   if (!initialData || initialData.length === 0) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-foreground/40 font-bold uppercase tracking-widest">
+      <div className="flex min-h-[60vh] items-center justify-center font-bold uppercase tracking-widest text-muted">
         No articles found.
       </div>
     );
@@ -36,9 +38,9 @@ export default function ArticleClient({ initialData = [] }: Props) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="font-playfair text-[clamp(2rem,4.5vw,4.5rem)] md:text-[clamp(2.5rem,3vw,5rem)] font-bold tracking-normal uppercase"
+              className="font-playfair text-5xl font-bold uppercase leading-[60px] tracking-normal md:text-[80px] md:leading-[96px]"
             >
-              Articles<span className="text-terracotta">.</span>
+              Articles<span className="text-accent">.</span>
             </motion.h1>
 
             <motion.div
@@ -47,11 +49,9 @@ export default function ArticleClient({ initialData = [] }: Props) {
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
               className="flex items-center"
             >
-              <button
-                type="button"
+              <IconButton
                 onClick={() => setViewMode((current) => current === 'list' ? 'grid' : 'list')}
-                className="flex h-9 w-9 items-center justify-center text-foreground/40 transition-colors duration-200 hover:text-terracotta"
-                aria-label={viewMode === 'list' ? '切换到卡片视图' : '切换到列表视图'}
+                label={viewMode === 'list' ? '切换到卡片视图' : '切换到列表视图'}
                 aria-pressed={viewMode === 'grid'}
                 title={viewMode === 'list' ? '切换到卡片视图' : '切换到列表视图'}
               >
@@ -66,25 +66,13 @@ export default function ArticleClient({ initialData = [] }: Props) {
                     aria-hidden="true"
                   >
                     {viewMode === 'list' ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="7" height="7" rx="1" />
-                        <rect x="14" y="3" width="7" height="7" rx="1" />
-                        <rect x="3" y="14" width="7" height="7" rx="1" />
-                        <rect x="14" y="14" width="7" height="7" rx="1" />
-                      </svg>
+                      <Grid2X2 aria-hidden="true" size={24} strokeWidth={2} />
                     ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="8" y1="6" x2="21" y2="6" />
-                        <line x1="8" y1="12" x2="21" y2="12" />
-                        <line x1="8" y1="18" x2="21" y2="18" />
-                        <line x1="3" y1="6" x2="3.01" y2="6" />
-                        <line x1="3" y1="12" x2="3.01" y2="12" />
-                        <line x1="3" y1="18" x2="3.01" y2="18" />
-                      </svg>
+                      <List aria-hidden="true" size={24} strokeWidth={2} />
                     )}
                   </motion.span>
                 </AnimatePresence>
-              </button>
+              </IconButton>
             </motion.div>
           </header>
 
@@ -100,11 +88,11 @@ export default function ArticleClient({ initialData = [] }: Props) {
                 transition={{ duration: 0.6, delay: groupIndex * 0.1 }}
                 className="relative flex flex-col gap-8"
               >
-                <div className="absolute -left-6 -top-12 md:-left-12 md:-top-16 text-[clamp(3.5rem,7vw,9rem)] font-black text-foreground/3 pointer-events-none select-none z-0">
+                <div className="pointer-events-none absolute -left-6 -top-12 z-0 select-none text-[56px] font-black leading-[60px] text-foreground/3 md:-left-12 md:-top-16 md:text-[96px] md:leading-[116px]">
                   {group.year}
                 </div>
 
-                <motion.h2 layout className="text-3xl font-black tracking-widest text-foreground/90 z-10 relative">
+                <motion.h2 layout className="relative z-10 text-[32px] font-black leading-[40px] tracking-widest text-foreground">
                   {group.year}
                 </motion.h2>
 
@@ -161,7 +149,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
           }}
           className="article-sidebar-align article-timeline hidden md:flex flex-col sticky top-[15vh] gap-6"
         >
-          <span className="text-xs font-black tracking-widest text-foreground/30 uppercase">
+          <span className="text-xs font-black uppercase leading-[18px] tracking-widest text-muted">
             Timeline
           </span>
           <nav className="flex flex-col gap-5">
@@ -169,7 +157,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
               <a
                 key={group.year}
                 href={`#year-${group.year}`}
-                className="text-sm font-bold tracking-widest text-foreground/40 hover:text-terracotta transition-colors"
+                className="inline-flex min-h-11 items-center rounded-lg text-sm font-bold leading-[22px] tracking-widest text-muted transition-colors hover:bg-surface-hover hover:text-accent"
               >
                 {group.year}
               </a>

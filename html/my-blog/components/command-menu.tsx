@@ -1,60 +1,98 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import * as Dialog from "@radix-ui/react-dialog";
 
-interface PostEntry {
+export interface SearchPostEntry {
   title: string;
   slug: string;
 }
 
-export default function CommandMenu({ posts }: { posts: PostEntry[] }) {
-  const [open, setOpen] = useState(false);
+interface CommandMenuProps {
+  posts: SearchPostEntry[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  triggerRef: RefObject<HTMLButtonElement | null>;
+}
+
+export default function CommandMenu({
+  posts,
+  open,
+  onOpenChange,
+  triggerRef,
+}: CommandMenuProps) {
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const wasOpen = useRef(false);
+  const [query, setQuery] = useState("");
+
+  const close = useCallback(() => onOpenChange(false), [onOpenChange]);
 
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((prev) => !prev);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        onOpenChange(!open);
+      }
+      if (event.key === "Escape" && open) {
+        event.preventDefault();
+        close();
       }
     };
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [close, onOpenChange, open]);
+
+  useEffect(() => {
+    if (open) {
+      wasOpen.current = true;
+      requestAnimationFrame(() => inputRef.current?.focus());
+      return;
+    }
+
+    if (wasOpen.current) {
+      wasOpen.current = false;
+      requestAnimationFrame(() => {
+        setQuery("");
+        triggerRef.current?.focus();
+      });
+    }
+  }, [open, triggerRef]);
 
   const handleSelect = useCallback(
     (slug: string) => {
       router.push(`/article/${slug}`);
-      setOpen(false);
+      close();
     },
-    [router]
+    [close, router],
   );
 
   return (
-    <>
-      {open && (
-        <div
-          className="fixed inset-0 bg-background/50 backdrop-blur-sm z-[200]"
-          onClick={() => setOpen(false)}
-        />
-      )}
-      <Command.Dialog
-        open={open}
-        onOpenChange={setOpen}
-        label="搜索文章"
-        className="fixed top-[18%] left-1/2 -translate-x-1/2 w-full max-w-xl z-[201] border border-foreground/10 shadow-2xl rounded-2xl bg-background overflow-hidden"
-      >
+    <Command.Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      label="搜索文章标题"
+      overlayClassName="command-menu-overlay fixed inset-0 z-[200] bg-background/50 backdrop-blur-sm"
+      contentClassName="command-menu-dialog"
+      className="w-full overflow-hidden rounded-2xl border border-border bg-background shadow-2xl"
+    >
         <Dialog.Title className="sr-only">搜索文章</Dialog.Title>
+        <Dialog.Description className="sr-only">
+          输入文章标题进行筛选，按回车打开文章。
+        </Dialog.Description>
         <Command.Input
+          ref={inputRef}
+          value={query}
+          onValueChange={setQuery}
+          aria-label="搜索文章标题"
           placeholder="搜索文章..."
-          style={{ padding: '1.5rem 2rem' }}
-          className="w-full text-2xl font-semibold bg-transparent border-b border-foreground/10 outline-none text-foreground placeholder:text-foreground/25"
+          className="command-menu-input w-full border-0 bg-transparent text-xl font-semibold leading-8 text-foreground outline-none placeholder:text-muted md:text-2xl"
         />
-        <Command.List style={{ padding: '0.75rem 0', maxHeight: '20rem', overflowY: 'auto' }}>
-          <Command.Empty style={{ padding: '1.5rem 2rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--foreground)' }} className="text-foreground/40">
+        <Command.List className="command-menu-list max-h-[min(320px,calc(100dvh-180px))] overflow-y-auto">
+          <Command.Empty className="flex min-h-12 items-center justify-center px-6 text-sm leading-[22px] text-muted">
             未找到文章
           </Command.Empty>
           {posts.map((post) => (
@@ -62,14 +100,12 @@ export default function CommandMenu({ posts }: { posts: PostEntry[] }) {
               key={post.slug}
               value={post.title}
               onSelect={() => handleSelect(post.slug)}
-              style={{ padding: '0.5rem 1.25rem', cursor: 'pointer' }}
-              className="text-base text-foreground/80 aria-selected:bg-foreground/[0.03] aria-selected:text-terracotta aria-selected:font-semibold transition-colors"
+              className="command-menu-item flex min-h-16 cursor-pointer items-center rounded-lg text-lg leading-7 text-foreground transition-colors aria-selected:bg-surface-hover aria-selected:font-semibold aria-selected:text-accent"
             >
               {post.title}
             </Command.Item>
           ))}
         </Command.List>
-      </Command.Dialog>
-    </>
+    </Command.Dialog>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import type { PostData } from "@/lib/posts";
 import type { CSSProperties, PointerEvent } from "react";
 
@@ -33,21 +34,21 @@ export default function PostListItem({ post }: { post: PostData }) {
         onPointerEnter={updateHighlightOrigin}
         onPointerMove={updateHighlightOrigin}
       >
-        <span className="w-28 md:w-36 shrink-0 text-sm font-bold tracking-widest text-foreground/40 uppercase mt-1">
+        <span className="mt-1 w-28 shrink-0 text-sm font-bold uppercase leading-[22px] tracking-widest text-muted md:w-36">
           {post.date}
         </span>
         <div className="flex-1 min-w-0 pr-4 md:pr-8 flex flex-col gap-1.5">
-          <h3 className="article-list-title text-base md:text-lg font-bold truncate text-foreground group-hover:text-terracotta transition-colors duration-300">
+          <h3 className="article-list-title truncate text-base font-bold leading-6 text-foreground transition-colors duration-300 group-hover:text-accent md:text-lg md:leading-7">
             {post.title}
           </h3>
-          <p className="font-noto-serif-sc text-sm text-foreground/50 line-clamp-1 md:line-clamp-2 leading-relaxed">
+          <p className="font-noto-serif-sc line-clamp-1 text-sm leading-[22px] text-muted md:line-clamp-2">
             {post.excerpt}
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0 text-sm font-medium text-foreground/40 mt-1">
+        <div className="mt-1 flex shrink-0 items-center gap-2 text-sm font-medium leading-[22px] text-muted">
           <span className="transition-transform duration-300 group-hover:-translate-x-1">{post.readTime}</span>
-          <span className="text-terracotta opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out font-black text-lg" aria-hidden="true">
-            →
+          <span className="text-accent opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out" aria-hidden="true">
+            <ArrowRight size={24} strokeWidth={2} />
           </span>
         </div>
         <span
@@ -55,7 +56,7 @@ export default function PostListItem({ post }: { post: PostData }) {
           aria-hidden="true"
         />
         <span
-          className="absolute bottom-0 left-0 h-[2px] w-full origin-center scale-x-0 bg-terracotta transition-transform duration-500 ease-out group-hover:scale-x-100"
+          className="absolute bottom-0 left-0 h-[2px] w-full origin-center scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
           style={highlightStyle}
           aria-hidden="true"
         />

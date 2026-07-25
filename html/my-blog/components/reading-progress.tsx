@@ -12,7 +12,7 @@ export default function ReadingProgress({ children }: { children: React.ReactNod
   return (
     <div ref={ref} className="relative w-full">
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[2.5px] bg-terracotta/70 origin-left z-[150] pointer-events-none"
+        className="pointer-events-none fixed left-0 right-0 top-0 z-[150] h-[2px] origin-left bg-accent"
         style={{ scaleX: scrollYProgress }}
       />
       {children}
