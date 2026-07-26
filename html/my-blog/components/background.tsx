@@ -1,7 +1,13 @@
 export function BackgroundGlow() {
   return (
     <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-      <div className="absolute -top-[10%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-[#D97757]/8 blur-[120px]"></div>
+      <div
+        className="absolute -top-[10%] -right-[10%] w-[70vw] h-[70vw] rounded-full blur-[120px]"
+        style={{
+          backgroundColor:
+            "color-mix(in srgb, var(--accent-color) 8%, transparent)",
+        }}
+      ></div>
       <div className="absolute -bottom-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-blue-500/5 blur-[150px]"></div>
     </div>
   );

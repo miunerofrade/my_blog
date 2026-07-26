@@ -4,62 +4,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useTheme } from "@teispace/next-themes";
 import { motion } from "framer-motion";
 import MediaLightbox from "@/components/media-lightbox";
-
-const oneDarkTheme = {
-  background: "transparent",
-  mainBkg: "#3b3245",
-  primaryColor: "#3b3245",
-  primaryTextColor: "#f0f2f4",
-  primaryBorderColor: "#c678dd",
-  secondaryColor: "#253d45",
-  secondaryTextColor: "#f0f2f4",
-  secondaryBorderColor: "#56b6c2",
-  tertiaryColor: "#34402f",
-  tertiaryTextColor: "#f0f2f4",
-  tertiaryBorderColor: "#98c379",
-  textColor: "#f0f2f4",
-  lineColor: "#c8cdd5",
-  edgeLabelBackground: "#282c34",
-  nodeBorder: "#c678dd",
-  clusterBkg: "transparent",
-  clusterBorder: "#7f8795",
-  titleColor: "#f0f2f4",
-
-  actorBkg: "#3b3245",
-  actorBorder: "#d97757",
-  actorTextColor: "#f0f2f4",
-  actorLineColor: "#7f8795",
-  signalColor: "#c8cdd5",
-  signalTextColor: "#f0f2f4",
-  labelBoxBkgColor: "#253d45",
-  labelBoxBorderColor: "#56b6c2",
-  labelTextColor: "#f0f2f4",
-  loopTextColor: "#f0f2f4",
-  activationBkgColor: "#34402f",
-  activationBorderColor: "#98c379",
-  noteBkgColor: "#4a402c",
-  noteTextColor: "#fff4cf",
-  noteBorderColor: "#e5c07b",
-
-  classText: "#f0f2f4",
-
-  sectionBkgColor: "#253d45",
-  altSectionBkgColor: "transparent",
-  sectionBkgColor2: "#3b3245",
-  taskBkgColor: "#d97757",
-  taskBorderColor: "#e5a087",
-  taskTextColor: "#21252b",
-  taskTextDarkColor: "#f0f2f4",
-  taskTextLightColor: "#21252b",
-  activeTaskBkgColor: "#98c379",
-  activeTaskBorderColor: "#b5d99c",
-  doneTaskBkgColor: "#5c6370",
-  doneTaskBorderColor: "#abb2bf",
-  critBkgColor: "#e06c75",
-  critBorderColor: "#ef9a9f",
-  todayLineColor: "#e5c07b",
-  gridColor: "#7f8795",
-};
+import { useArticleTheme } from "@/components/article-theme";
+import { getMermaidThemeVariables } from "@/lib/mermaid-theme";
 
 function normalizeSvgSize(svg: string) {
   const document = new DOMParser().parseFromString(svg, "image/svg+xml");
@@ -89,6 +35,7 @@ export function Mermaid({ chart }: { chart: string }) {
   const [hasError, setHasError] = useState(false);
   const layoutId = `mermaid-zoom-${useId()}`;
   const { resolvedTheme } = useTheme();
+  const articleTheme = useArticleTheme();
 
   useEffect(() => {
     let cancelled = false;
@@ -101,9 +48,7 @@ export function Mermaid({ chart }: { chart: string }) {
         mermaid.initialize({
           startOnLoad: false,
           theme: isDark ? "base" : "default",
-          themeVariables: isDark
-            ? oneDarkTheme
-            : { background: "transparent" },
+          themeVariables: getMermaidThemeVariables(isDark),
           flowchart: { useMaxWidth: false },
           sequence: { useMaxWidth: false },
           class: { useMaxWidth: false },
@@ -127,7 +72,7 @@ export function Mermaid({ chart }: { chart: string }) {
     return () => {
       cancelled = true;
     };
-  }, [chart, resolvedTheme]);
+  }, [articleTheme, chart, resolvedTheme]);
 
   const openZoom = () => {
     if (rendered && !hasError) setIsZoomed(true);

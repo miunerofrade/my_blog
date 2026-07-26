@@ -120,7 +120,7 @@ code {
   --bg-color: var(--color-pampas);
   --text-color: var(--color-ink);
   --muted-color: #707071;
-  --accent-color: hsl(15deg 63% 60% / 1);
+  --accent-color: #d97757;
   --accent-foreground-color: #ffffff;
   --success-color: #237a3b;
   --warning-color: #8a5700;
@@ -129,6 +129,54 @@ code {
   --surface-color: #ffffff;
   --surface-hover-color: #fafaf8;
   --border-color: rgb(29 29 31 / 12%);
+  --mermaid-background: transparent;
+  --mermaid-main-background: #3b3245;
+  --mermaid-primary-color: #3b3245;
+  --mermaid-primary-text: #f0f2f4;
+  --mermaid-primary-border: #c678dd;
+  --mermaid-secondary-color: #253d45;
+  --mermaid-secondary-text: #f0f2f4;
+  --mermaid-secondary-border: #56b6c2;
+  --mermaid-tertiary-color: #34402f;
+  --mermaid-tertiary-text: #f0f2f4;
+  --mermaid-tertiary-border: #98c379;
+  --mermaid-text: #f0f2f4;
+  --mermaid-line: #c8cdd5;
+  --mermaid-edge-label-background: #282c34;
+  --mermaid-node-border: #c678dd;
+  --mermaid-cluster-background: transparent;
+  --mermaid-cluster-border: #7f8795;
+  --mermaid-title: #f0f2f4;
+  --mermaid-actor-background: #3b3245;
+  --mermaid-actor-text: #f0f2f4;
+  --mermaid-actor-line: #7f8795;
+  --mermaid-signal: #c8cdd5;
+  --mermaid-signal-text: #f0f2f4;
+  --mermaid-label-background: #253d45;
+  --mermaid-label-border: #56b6c2;
+  --mermaid-label-text: #f0f2f4;
+  --mermaid-loop-text: #f0f2f4;
+  --mermaid-activation-background: #34402f;
+  --mermaid-activation-border: #98c379;
+  --mermaid-note-background: #4a402c;
+  --mermaid-note-text: #fff4cf;
+  --mermaid-note-border: #e5c07b;
+  --mermaid-class-text: #f0f2f4;
+  --mermaid-section-background: #253d45;
+  --mermaid-alt-section-background: transparent;
+  --mermaid-section-background-alt: #3b3245;
+  --mermaid-task-border: #e5a087;
+  --mermaid-task-text: #21252b;
+  --mermaid-task-text-dark: #f0f2f4;
+  --mermaid-task-text-light: #21252b;
+  --mermaid-active-task-background: #98c379;
+  --mermaid-active-task-border: #b5d99c;
+  --mermaid-done-task-background: #5c6370;
+  --mermaid-done-task-border: #abb2bf;
+  --mermaid-critical-background: #e06c75;
+  --mermaid-critical-border: #ef9a9f;
+  --mermaid-today-line: #e5c07b;
+  --mermaid-grid: #7f8795;
 }
 
 .code-copy-button {
@@ -238,8 +286,6 @@ code {
   --bg-color: #282c34;
   --text-color: #c7cbd3;
   --muted-color: #9da5b0;
-  --accent-color: hsl(15deg 63% 60% / 1);
-  --accent-foreground-color: #ffffff;
   --success-color: #75c58b;
   --warning-color: #f0c36a;
   --error-color: #ff8a80;
@@ -628,35 +674,12 @@ body {
   gap: var(--space-3);
   padding: var(--space-3) var(--space-3) var(--space-2);
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-card);
+  border: 0;
+  border-bottom: 1px solid var(--border-color);
   color: var(--text-color);
-  background: color-mix(in srgb, var(--surface-color) 78%, transparent);
-  box-shadow: 0 2px 10px rgb(0 0 0 / 4%);
+  background: transparent;
+  box-shadow: none;
   text-decoration: none;
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  transition: box-shadow 220ms ease, border-color 220ms ease;
-}
-
-.friend-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border: 2px solid color-mix(in srgb, var(--color-terracotta) 68%, transparent);
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 260ms ease;
-}
-
-.friend-card:hover {
-  border-color: color-mix(in srgb, var(--color-terracotta) 52%, var(--border-color));
-  box-shadow: 0 14px 36px rgb(0 0 0 / 9%);
-}
-
-.friend-card:hover::after {
-  opacity: 1;
 }
 
 .friend-card-header {
@@ -695,10 +718,6 @@ body {
   font-weight: 700;
   line-height: 1.625rem;
   transition: color 180ms ease;
-}
-
-.friend-card:hover .friend-card-name {
-  color: var(--color-terracotta);
 }
 
 .friend-card-domain {
@@ -1087,7 +1106,6 @@ body {
 
   .friend-card {
     min-height: 10.5rem;
-    border-radius: var(--radius-card);
     padding: var(--space-3) var(--space-2) var(--space-2);
   }
 

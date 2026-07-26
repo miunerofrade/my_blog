@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
@@ -10,11 +14,23 @@ type LinkItem = {
   desc: string;
   url: string;
   avatar?: string;
+  theme?: string;
 };
 
 const LINKS_DATA: LinkItem[] = [
   { name: "GitHub", desc: "全球最大的开源软件开发与协作平台。", url: "https://github.com/miunerofrade", avatar: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
+  {
+    name: "洛天依",
+    desc: "Vsinger 旗下虚拟歌手，世界首位中文 V 家虚拟歌手。",
+    url: "https://space.bilibili.com/36081646",
+    avatar: "/api/avatars/luo-tianyi",
+    theme: "66ccff",
+  },
 ];
+
+type FriendCardStyle = CSSProperties & {
+  "--friend-theme"?: string;
+};
 
 const containerVariants = {
   hidden: {},
@@ -29,6 +45,33 @@ const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
 };
+
+function updateCardHighlightOrigin(event: PointerEvent<HTMLAnchorElement>) {
+  const bounds = event.currentTarget.getBoundingClientRect();
+  const position = ((event.clientX - bounds.left) / bounds.width) * 100;
+  event.currentTarget.style.setProperty("--hover-origin", `${position}%`);
+}
+
+function activateCardTheme(event: PointerEvent<HTMLAnchorElement>) {
+  updateCardHighlightOrigin(event);
+  event.currentTarget.style.setProperty(
+    "--friend-name-color",
+    "var(--friend-theme, var(--color-terracotta))",
+  );
+}
+
+function deactivateCardTheme(event: PointerEvent<HTMLAnchorElement>) {
+  event.currentTarget.style.removeProperty("--friend-name-color");
+}
+
+function getFriendCardStyle(theme?: string): FriendCardStyle | undefined {
+  if (!theme) return undefined;
+  const value = theme.replace(/^#/, "");
+  if (!/^[0-9a-fA-F]{6}$/.test(value)) {
+    throw new Error(`Invalid friend theme: ${theme}`);
+  }
+  return { "--friend-theme": `#${value.toUpperCase()}` };
+}
 
 function FaviconImg({ item }: { item: LinkItem }) {
   const [failed, setFailed] = useState(false);
@@ -108,17 +151,36 @@ export default function LinksPage() {
               target="_blank"
               rel="noopener noreferrer"
               variants={cardVariants}
-              whileHover={{ y: -6 }}
               whileTap={{ scale: 0.99 }}
               transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              onPointerEnter={activateCardTheme}
+              onPointerMove={updateCardHighlightOrigin}
+              onPointerLeave={deactivateCardTheme}
+              style={getFriendCardStyle(link.theme)}
               className="friend-card group"
             >
-              <span className="friend-card-arrow" aria-hidden="true"><ExternalLink size={24} strokeWidth={2} /></span>
+              <span
+                className="friend-card-arrow"
+                style={{
+                  color: "var(--friend-theme, var(--color-terracotta))",
+                }}
+                aria-hidden="true"
+              >
+                <ExternalLink size={24} strokeWidth={2} />
+              </span>
 
               <div className="friend-card-header">
                 <FaviconImg item={link} />
                 <span className="friend-card-identity">
-                  <span className="friend-card-name">{link.name}</span>
+                  <span
+                    className="friend-card-name"
+                    style={{
+                      color:
+                        "var(--friend-name-color, var(--text-color))",
+                    }}
+                  >
+                    {link.name}
+                  </span>
                   <span className="friend-card-domain">
                     {new URL(link.url).hostname.replace(/^www\./, "")}
                   </span>
@@ -128,6 +190,16 @@ export default function LinksPage() {
               <span className="friend-card-description">
                 {link.desc}
               </span>
+              <span
+                data-friend-highlight
+                className="absolute bottom-0 left-0 h-[2px] w-full scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
+                style={{
+                  backgroundColor:
+                    "var(--friend-theme, var(--accent-color))",
+                  transformOrigin: "var(--hover-origin, 50%) center",
+                }}
+                aria-hidden="true"
+              />
             </motion.a>
           ))}
         </motion.div>

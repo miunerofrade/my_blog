@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { z } from 'zod';
+import { ThemeColorSchema, type ThemeColor } from './theme';
 
 const PostSchema = z.object({
   title: z.string(),
@@ -9,6 +10,7 @@ const PostSchema = z.object({
   excerpt: z.string(),
   readTime: z.string().optional(),
   tags: z.array(z.string()).optional().default([]),
+  theme: ThemeColorSchema.optional(),
 });
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
@@ -21,6 +23,7 @@ export interface PostData {
   readTime?: string;
   year: string;
   tags?: string[];
+  theme?: ThemeColor;
 }
 
 export interface PostDataWithContent extends PostData {

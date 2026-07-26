@@ -6,6 +6,7 @@ import { BackButton } from "@/components/back-button";
 import ArticleLayout from "@/components/article-layout";
 import ReadingProgress from "@/components/reading-progress";
 import MarkdownRenderer from "@/components/markdown-renderer";
+import ArticleTheme from "@/components/article-theme";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export async function generateStaticParams() {
@@ -46,7 +47,8 @@ export default async function PostPage({
   const otherPosts = sortedPosts.filter((p) => p.slug !== slug).slice(0, 5);
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground transition-colors duration-300"
+    <ArticleTheme theme={postData.theme}>
+      <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground transition-colors duration-300"
       style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
       <ArticleLayout headings={postData.headings || []}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -166,6 +168,7 @@ export default async function PostPage({
 
         </div>
       </ArticleLayout>
-    </main>
+      </main>
+    </ArticleTheme>
   );
 }
