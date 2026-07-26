@@ -39,6 +39,22 @@ corepack pnpm lint
 
 博客文章存放在 `html/my-blog/content/posts`，添加 Markdown 文件即可新增文章。
 
+## 修改 Featured 仓库
+
+首页 GitHub Recent focus 会显示一个 Featured 主项目和最多三个紧凑项目。修改 `html/my-blog/lib/site-config.ts` 中的仓库名即可更换主项目：
+
+```ts
+export const siteConfig = {
+  github: {
+    featuredRepository: "SEU-CVStream",
+  },
+} as const;
+```
+
+`featuredRepository` 必须与 GitHub 上的仓库名完全一致。配置的仓库会优先保留在首页数据中；如果没有找到，则自动使用最近更新的第一个仓库。
+
+文章 metadata、主题色、封面和其他内容管理说明参见 [`html/my-blog/README.md`](html/my-blog/README.md)。
+
 ## 关于个人网站的部署
 
  托管在[Vercel](htts://vercel.com)再购买域名即可。[我的网站](https://miunerofrade.com)
