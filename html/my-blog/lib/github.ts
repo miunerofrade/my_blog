@@ -41,9 +41,8 @@ export async function getRecentRepositories(): Promise<GitHubRepository[]> {
     if (!response.ok) return [];
 
     const repositories = (await response.json()) as GitHubApiRepository[];
-    return repositories
+    const visibleRepositories = repositories
       .filter((repository) => !repository.fork && !repository.archived)
-      .slice(0, 4)
       .map((repository) => ({
         id: repository.id,
         name: repository.name,
@@ -54,7 +53,20 @@ export async function getRecentRepositories(): Promise<GitHubRepository[]> {
         forks: repository.forks_count,
         pushedAt: repository.pushed_at,
       }));
+
+    const featuredRepository = visibleRepositories.find(
+      (repository) =>
+        repository.name === siteConfig.github.featuredRepository,
+    );
+    const recentRepositories = visibleRepositories.filter(
+      (repository) => repository.id !== featuredRepository?.id,
+    );
+
+    return featuredRepository
+      ? [featuredRepository, ...recentRepositories].slice(0, 4)
+      : visibleRepositories.slice(0, 4);
   } catch {
     return [];
   }
 }
+import { siteConfig } from "./site-config";

@@ -5,13 +5,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import {
   CupertinoButton,
-  CupertinoCard,
   CupertinoSection,
 } from "@/components/cupertino";
-import PostListItem from "@/components/post-list-item";
+import HomeWritings from "@/components/home-writings";
+import HomeRepositories from "@/components/home-repositories";
 import type { GitHubRepository } from "@/lib/github";
 import type { PostData } from "@/lib/posts";
-import type { PointerEvent } from "react";
 
 const NAME = "Miunerofrade";
 
@@ -20,28 +19,6 @@ const NAVIGATION_ITEMS = [
   { label: "About Me", href: "/about", external: false },
   { label: "Projects", href: "https://github.com/miunerofrade?tab=repositories", external: true },
 ];
-
-const languageColors: Record<string, string> = {
-  Python: "#3572a5",
-  TypeScript: "#3178c6",
-  JavaScript: "#f1e05a",
-  Rust: "#dea584",
-  Go: "#00add8",
-};
-
-function formatRepositoryDate(value: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(value));
-}
-
-function updateRepositoryHighlightOrigin(event: PointerEvent<HTMLDivElement>) {
-  const bounds = event.currentTarget.getBoundingClientRect();
-  const position = ((event.clientX - bounds.left) / bounds.width) * 100;
-  event.currentTarget.style.setProperty("--hover-origin", `${position}%`);
-}
 
 export default function HomePage({
   repositories,
@@ -186,20 +163,7 @@ export default function HomePage({
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="cupertino-writing-list"
             >
-              <div className="flex flex-col">
-                {recentPosts.map((post) => (
-                  <PostListItem key={post.slug} post={post} />
-                ))}
-              </div>
-
-              <div className="cupertino-view-all-row">
-                <CupertinoButton
-                  href="/article"
-                  className="cupertino-button-link"
-                >
-                  View all writings <ArrowRight aria-hidden="true" size={24} strokeWidth={2} />
-                </CupertinoButton>
-              </div>
+              <HomeWritings posts={recentPosts} />
             </motion.div>
           )}
         </div>
@@ -231,71 +195,7 @@ export default function HomePage({
               }}
               className="cupertino-repository-grid"
             >
-              {repositories.map((repository) => (
-                <motion.div
-                  key={repository.id}
-                  variants={{
-                    hidden: { opacity: 0, y: 30 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                  onPointerEnter={updateRepositoryHighlightOrigin}
-                  onPointerMove={updateRepositoryHighlightOrigin}
-                >
-                  <CupertinoCard href={repository.url} external>
-                    <span className="cupertino-card-copy">
-                      <span className="cupertino-card-title">
-                        {repository.name}
-                      </span>
-                      {repository.description && (
-                        <span className="cupertino-card-description">
-                          {repository.description}
-                        </span>
-                      )}
-                    </span>
-
-                    <span className="cupertino-metadata">
-                      {repository.language && (
-                        <span className="cupertino-metadata-item">
-                          <span
-                            className="cupertino-language-dot"
-                            style={{
-                              backgroundColor:
-                                languageColors[repository.language] ??
-                                "var(--color-terracotta)",
-                            }}
-                            aria-hidden="true"
-                          />
-                          {repository.language}
-                        </span>
-                      )}
-                      <span>Stars {repository.stars}</span>
-                      {repository.forks > 0 && (
-                        <span>Forks {repository.forks}</span>
-                      )}
-                      <time dateTime={repository.pushedAt}>
-                        {formatRepositoryDate(repository.pushedAt)}
-                      </time>
-                    </span>
-                  </CupertinoCard>
-                </motion.div>
-              ))}
-
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 16 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                className="cupertino-view-all-row"
-              >
-                <CupertinoButton
-                  href="https://github.com/miunerofrade?tab=repositories"
-                  external
-                  className="cupertino-button-link"
-                >
-                  View all repositories <ExternalLink aria-hidden="true" size={24} strokeWidth={2} />
-                </CupertinoButton>
-              </motion.div>
+              <HomeRepositories repositories={repositories} />
             </motion.div>
           )}
         </div>

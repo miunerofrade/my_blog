@@ -52,11 +52,11 @@ export default function PostListItem({ post }: { post: PostData }) {
           </span>
         </div>
         <span
-          className="absolute bottom-0 left-0 h-px w-full bg-foreground/10"
+          className="absolute bottom-0 left-0 h-[var(--divider-size)] w-full bg-foreground/10"
           aria-hidden="true"
         />
         <span
-          className="absolute bottom-0 left-0 h-[2px] w-full origin-center scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
+          className="absolute bottom-0 left-0 h-[var(--divider-highlight-size)] w-full origin-center scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
           style={highlightStyle}
           aria-hidden="true"
         />

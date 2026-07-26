@@ -22,7 +22,7 @@ Miunerofrade 的个人博客，使用 Next.js App Router 构建。文章来自�
 - 桌面导航与移动端右侧抽屉导航
 - About、Tags 和 Friends 页面
 
-GitHub Recent focus 使用公开 GitHub API。遇到匿名请求限流或网络错误时会返回空列表，不影响首页主体内容。
+GitHub Recent focus 使用公开 GitHub API。遇到匿名请求限流或网络错误时会返回空列表，不影响首页主体内容。主项目由 `lib/site-config.ts` 集中指定。
 
 ## 技术栈
 
@@ -74,7 +74,18 @@ corepack pnpm exec tsc --noEmit
 
 ## 内容管理
 
-在 `content/posts` 中添加 Markdown 文件即可发布文章。文件需要包含 front matter：
+在 `content/posts` 中添加 Markdown 文件即可发布文章。front matter 支持以下字段：
+
+| 字段 | 必填 | 说明 |
+| --- | --- | --- |
+| `title` | 是 | 文章标题 |
+| `date` | 是 | 日期，建议使用 `YYYY-MM-DD` |
+| `excerpt` | 是 | 文章摘要 |
+| `readTime` | 否 | 阅读时间文本 |
+| `tags` | 否 | 标签数组 |
+| `theme` | 否 | 文章强调色，六位十六进制，可带 `#` |
+| `color` | 否 | 卡片视觉区颜色，必须是不带 `#` 的 `RRGGBB` |
+| `cover` | 否 | `public` 目录内的本地图片路径 |
 
 ```md
 ---
@@ -82,15 +93,34 @@ title: "文章标题"
 date: "2026-07-22"
 excerpt: "文章摘要"
 readTime: "5 min read"
-tags: ["Blog"]
+tags: ["Blog", "Next.js"]
+theme: "#16A34A"
+color: "66CCFF"
+cover: "/images/example-cover.webp"
 ---
 ```
+
+卡片视觉区按 `cover → color → theme → 默认陶土色` 的顺序回退。`slug`、年份和封面比例由系统自动生成，不需要写入 front matter。
 
 文件名会成为文章路由，例如 `finally-built-the-blog.md` 对应：
 
 ```text
 /article/finally-built-the-blog
 ```
+
+## GitHub 主项目
+
+首页 Recent focus 会显示一个 Featured 主项目和最多三个紧凑项目。修改 `lib/site-config.ts` 中的仓库名即可更换主项目：
+
+```ts
+export const siteConfig = {
+  github: {
+    featuredRepository: "SEU-CVStream",
+  },
+} as const;
+```
+
+仓库名必须与 GitHub 上的名称完全一致。配置的仓库会优先保留在首页数据中；如果没有找到，则自动使用最近更新的第一个仓库。
 
 ## 部署
 

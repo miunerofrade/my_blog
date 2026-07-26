@@ -1,18 +1,107 @@
 "use client";
+import "./article-card-visual.css";
 import { motion, AnimatePresence } from "framer-motion";
-import { Grid2X2, List } from "lucide-react";
+import { ArrowUpRight, Grid2X2, List } from "lucide-react";
 import IconButton from "@/components/icon-button";
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { PostData } from "@/lib/posts";
 import PostListItem from "@/components/post-list-item";
+import JustifiedPostGrid from "@/components/justified-post-grid";
+import PostCardVisual, {
+  getPostCardStyle,
+} from "@/components/post-card-visual";
 
 interface Props {
   initialData: { year: string; posts: PostData[] }[];
 }
 
+type ViewMode = "grid" | "list";
+
+const viewModeStorageKey = "article-view-mode";
+const viewModeChangeEvent = "article-view-mode-change";
+
+function getSavedViewMode(): ViewMode {
+  const savedViewMode = window.localStorage.getItem(viewModeStorageKey);
+  return savedViewMode === "grid" ? "grid" : "list";
+}
+
+function subscribeToViewMode(onStoreChange: () => void) {
+  window.addEventListener("storage", onStoreChange);
+  window.addEventListener(viewModeChangeEvent, onStoreChange);
+
+  return () => {
+    window.removeEventListener("storage", onStoreChange);
+    window.removeEventListener(viewModeChangeEvent, onStoreChange);
+  };
+}
+
+function ArticleGridCard({
+  post,
+  eager,
+  visualHeight,
+}: {
+  post: PostData;
+  eager: boolean;
+  visualHeight: number;
+}) {
+  return (
+    <Link
+      href={`/article/${post.slug}`}
+      className="article-grid-card group"
+      style={getPostCardStyle(post)}
+    >
+      <PostCardVisual
+        post={post}
+        eager={eager}
+        visualHeight={visualHeight}
+        className="article-grid-card-visual"
+      />
+
+      <span className="article-grid-card-content">
+        <span className="article-grid-card-copy">
+          <h3 className="article-grid-card-title">{post.title}</h3>
+          <span className="article-grid-card-description">{post.excerpt}</span>
+        </span>
+
+        <span className="article-grid-card-footer">
+          <span className="article-grid-card-metadata">
+            <time dateTime={post.date}>{post.date}</time>
+            {post.readTime ? (
+              <>
+                <span className="article-grid-card-dot" aria-hidden="true" />
+                <span>{post.readTime}</span>
+              </>
+            ) : null}
+          </span>
+          <ArrowUpRight
+            className="article-grid-card-arrow"
+            aria-hidden="true"
+            size={22}
+            strokeWidth={2}
+          />
+        </span>
+      </span>
+    </Link>
+  );
+}
+
 export default function ArticleClient({ initialData = [] }: Props) {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const postCount = initialData.reduce(
+    (total, group) => total + group.posts.length,
+    0,
+  );
+  const viewMode = useSyncExternalStore(
+    subscribeToViewMode,
+    getSavedViewMode,
+    () => "list",
+  );
+
+  const toggleViewMode = () => {
+    const next = viewMode === "list" ? "grid" : "list";
+    window.localStorage.setItem(viewModeStorageKey, next);
+    window.dispatchEvent(new Event(viewModeChangeEvent));
+  };
 
   // 防止初次渲染时因为没有数据而崩溃
   if (!initialData || initialData.length === 0) {
@@ -26,7 +115,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
   return (
     <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground"
       style={{ paddingBottom: '3rem' }}>
-      <div className="article-page-shell">
+      <div className={`article-page-shell ${postCount === 1 ? "article-index-shell-single" : ""}`}>
         
         {/* 主体内容区 */}
         <div className="article-main-column">
@@ -50,7 +139,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
               className="flex items-center"
             >
               <IconButton
-                onClick={() => setViewMode((current) => current === 'list' ? 'grid' : 'list')}
+                onClick={toggleViewMode}
                 label={viewMode === 'list' ? '切换到卡片视图' : '切换到列表视图'}
                 aria-pressed={viewMode === 'grid'}
                 title={viewMode === 'list' ? '切换到卡片视图' : '切换到列表视图'}
@@ -103,33 +192,26 @@ export default function ArticleClient({ initialData = [] }: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
-                    className={viewMode === 'grid' ? "article-card-grid z-10" : "flex flex-col z-10"}
+                    className="z-10"
                   >
-                    {group.posts.map((post) =>
-                      viewMode === 'grid' ? (
-                        <Link
-                          key={post.slug}
-                          href={`/article/${post.slug}`}
-                          className="article-grid-card group"
-                        >
-                          <span className="article-grid-card-copy">
-                              <h3 className="article-grid-card-title">
-                                {post.title}
-                              </h3>
-                              <span className="article-grid-card-description">
-                                {post.excerpt}
-                              </span>
-                          </span>
-
-                          <span className="article-grid-card-metadata">
-                            <time dateTime={post.date}>{post.date}</time>
-                            <span className="article-grid-card-dot" aria-hidden="true" />
-                            <span>{post.readTime}</span>
-                          </span>
-                        </Link>
-                      ) : (
-                        <PostListItem key={post.slug} post={post} />
-                      )
+                    {viewMode === "grid" ? (
+                      <JustifiedPostGrid
+                        posts={group.posts}
+                        className="article-card-layout"
+                        renderItem={(post, layout, postIndex) => (
+                          <ArticleGridCard
+                            post={post}
+                            eager={groupIndex === 0 && postIndex === 0}
+                            visualHeight={layout.visualHeight}
+                          />
+                        )}
+                      />
+                    ) : (
+                      <div className="flex flex-col">
+                        {group.posts.map((post) => (
+                          <PostListItem key={post.slug} post={post} />
+                        ))}
+                      </div>
                     )}
                   </motion.div>
                 </AnimatePresence>
@@ -139,7 +221,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
         </div>
 
         {/* 右侧：时间轴侧边栏 */}
-        <motion.aside
+        {initialData.length > 1 ? <motion.aside
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -163,7 +245,7 @@ export default function ArticleClient({ initialData = [] }: Props) {
               </a>
             ))}
           </nav>
-        </motion.aside>
+        </motion.aside> : null}
       </div>
     </main>
   );

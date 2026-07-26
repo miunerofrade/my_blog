@@ -192,7 +192,7 @@ export default function LinksPage() {
               </span>
               <span
                 data-friend-highlight
-                className="absolute bottom-0 left-0 h-[2px] w-full scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
+                className="absolute bottom-0 left-0 h-[var(--divider-highlight-size)] w-full scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
                 style={{
                   backgroundColor:
                     "var(--friend-theme, var(--accent-color))",

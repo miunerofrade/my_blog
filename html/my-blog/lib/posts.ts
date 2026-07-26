@@ -1,16 +1,45 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { imageSize } from 'image-size';
 import { z } from 'zod';
 import { ThemeColorSchema, type ThemeColor } from './theme';
 
-const PostSchema = z.object({
+export const CoverPathSchema = z.preprocess(
+  (value) =>
+    typeof value === "string" && value.trim() === "" ? undefined : value,
+  z
+    .string()
+    .trim()
+    .regex(
+      /^\/(?!\/).+\.(?:avif|gif|jpe?g|png|webp)$/i,
+      "cover must be a local image path such as /images/post.webp",
+    )
+    .refine(
+      (value) => !value?.split("/").includes(".."),
+      "cover must stay inside the public directory",
+    )
+    .optional(),
+);
+
+export const CardColorSchema = z
+  .string()
+  .trim()
+  .regex(
+    /^[0-9a-fA-F]{6}$/,
+    "color must be a six-digit hexadecimal color without #",
+  )
+  .transform((value) => `#${value.toUpperCase()}` as ThemeColor);
+
+export const PostSchema = z.object({
   title: z.string(),
   date: z.string(),
   excerpt: z.string(),
   readTime: z.string().optional(),
   tags: z.array(z.string()).optional().default([]),
   theme: ThemeColorSchema.optional(),
+  color: CardColorSchema.optional(),
+  cover: CoverPathSchema,
 });
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
@@ -24,6 +53,9 @@ export interface PostData {
   year: string;
   tags?: string[];
   theme?: ThemeColor;
+  color?: ThemeColor;
+  cover?: string;
+  coverAspectRatio?: number;
 }
 
 export interface PostDataWithContent extends PostData {
@@ -35,6 +67,22 @@ export interface HeadingItem {
   id: string;
   text: string;
   level: number;
+}
+
+function getCoverAspectRatio(cover?: string) {
+  if (!cover) {
+    return undefined;
+  }
+
+  const relativeCoverPath = cover.replace(/^\/+/, "");
+  const fullCoverPath = path.join(process.cwd(), "public", relativeCoverPath);
+  const dimensions = imageSize(fs.readFileSync(fullCoverPath));
+
+  if (!dimensions.width || !dimensions.height) {
+    throw new Error(`Unable to read cover dimensions: ${cover}`);
+  }
+
+  return dimensions.width / dimensions.height;
 }
 
 export function extractHeadings(content: string): HeadingItem[] {
@@ -73,6 +121,7 @@ export function getGroupedPosts(): { year: string; posts: PostData[] }[] {
         slug,
         year,
         ...parsed,
+        coverAspectRatio: getCoverAspectRatio(parsed.cover),
       } as PostData;
     });
 
@@ -123,6 +172,7 @@ export function getPostData(slug: string): PostDataWithContent {
     ...parsed,
     year: parsed.date.split('-')[0],
     headings: extractHeadings(content),
+    coverAspectRatio: getCoverAspectRatio(parsed.cover),
   };
 }
 
