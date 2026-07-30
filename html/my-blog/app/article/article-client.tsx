@@ -91,6 +91,8 @@ export default function ArticleClient({ initialData = [] }: Props) {
     (total, group) => total + group.posts.length,
     0,
   );
+  const hasSingleYear = initialData.length === 1;
+  const hasSinglePost = postCount === 1;
   const viewMode = useSyncExternalStore(
     subscribeToViewMode,
     getSavedViewMode,
@@ -115,7 +117,15 @@ export default function ArticleClient({ initialData = [] }: Props) {
   return (
     <main className="flex min-h-screen flex-col items-center bg-transparent text-foreground"
       style={{ paddingBottom: '3rem' }}>
-      <div className={`article-page-shell ${postCount === 1 ? "article-index-shell-single" : ""}`}>
+      <div
+        className={[
+          "article-page-shell",
+          hasSingleYear ? "article-index-shell-single-year" : "",
+          hasSinglePost ? "article-index-shell-single-post" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
         
         {/* 主体内容区 */}
         <div className="article-main-column">

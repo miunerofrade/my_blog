@@ -992,14 +992,6 @@ body {
   max-width: 52rem;
 }
 
-.article-index-shell-single {
-  display: flex;
-}
-
-.article-index-shell-single .article-main-column {
-  max-width: none;
-}
-
 .article-grid-card {
   min-width: 0;
   display: grid;

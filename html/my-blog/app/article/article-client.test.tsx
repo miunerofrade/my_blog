@@ -27,7 +27,12 @@ describe("ArticleClient card view", () => {
     );
 
     expect(screen.queryByText("Timeline")).not.toBeInTheDocument();
-    expect(container.querySelector(".article-index-shell-single")).toBeInTheDocument();
+    expect(
+      container.querySelector(".article-index-shell-single-year"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".article-index-shell-single-post"),
+    ).toBeInTheDocument();
 
     await user.click(
       screen.getByRole("button", { name: "切换到卡片视图" }),
@@ -96,7 +101,7 @@ describe("ArticleClient card view", () => {
     ).toBe("#FFFFFF");
   });
 
-  it("only enables the single-card layout for one actual post", () => {
+  it("uses the full-width year layout without enabling the single-post card", () => {
     const { container } = render(
       <ArticleClient
         initialData={[
@@ -112,7 +117,46 @@ describe("ArticleClient card view", () => {
     );
 
     expect(
-      container.querySelector(".article-index-shell-single"),
+      container.querySelector(".article-index-shell-single-year"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".article-index-shell-single-post"),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Timeline")).not.toBeInTheDocument();
+  });
+
+  it("keeps the timeline grid only when multiple years are present", () => {
+    const { container } = render(
+      <ArticleClient
+        initialData={[
+          { year: "2026", posts: [themedPost] },
+          {
+            year: "2025",
+            posts: [
+              {
+                ...themedPost,
+                slug: "older-post",
+                title: "Older post",
+                date: "2025-12-31",
+                year: "2025",
+              },
+            ],
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Timeline")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "2026" })).toHaveAttribute(
+      "href",
+      "#year-2026",
+    );
+    expect(screen.getByRole("link", { name: "2025" })).toHaveAttribute(
+      "href",
+      "#year-2025",
+    );
+    expect(
+      container.querySelector(".article-index-shell-single-year"),
     ).not.toBeInTheDocument();
   });
 });
