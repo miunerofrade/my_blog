@@ -3,7 +3,25 @@ import {
   CardColorSchema,
   CoverPathSchema,
   PostSchema,
+  decodePostSlug,
+  getPostData,
 } from "./posts";
+
+describe("post slugs", () => {
+  it("decodes a URL-encoded Chinese slug before reading the post", () => {
+    const encodedSlug = encodeURIComponent("AI时代的自主权");
+
+    expect(decodePostSlug(encodedSlug)).toBe("AI时代的自主权");
+    expect(getPostData(encodedSlug).slug).toBe("AI时代的自主权");
+  });
+
+  it.each(["../secret", "..%2Fsecret", "%2E%2E%5Csecret"])(
+    "rejects a slug that escapes the posts directory: %s",
+    (slug) => {
+      expect(() => decodePostSlug(slug)).toThrow("Invalid post slug");
+    },
+  );
+});
 
 describe("CoverPathSchema", () => {
   it.each([

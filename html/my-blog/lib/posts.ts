@@ -44,6 +44,20 @@ export const PostSchema = z.object({
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
+export function decodePostSlug(slug: string): string {
+  const decodedSlug = decodeURIComponent(slug);
+
+  if (
+    decodedSlug !== path.basename(decodedSlug) ||
+    decodedSlug.includes("/") ||
+    decodedSlug.includes("\\")
+  ) {
+    throw new Error("Invalid post slug");
+  }
+
+  return decodedSlug;
+}
+
 export interface PostData {
   slug: string;
   title: string;
@@ -159,7 +173,8 @@ export function getAllPostSlugs() {
 
 // 根据 slug 获取单篇文章的完整内容
 export function getPostData(slug: string): PostDataWithContent {
-  const fullPath = path.join(postsDirectory, `${slug}.md`);
+  const decodedSlug = decodePostSlug(slug);
+  const fullPath = path.join(postsDirectory, `${decodedSlug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   
   // matter 会把头部数据放在 data 里，把 Markdown 正文放在 content 里
@@ -167,7 +182,7 @@ export function getPostData(slug: string): PostDataWithContent {
   const parsed = PostSchema.parse(data);
 
   return {
-    slug,
+    slug: decodedSlug,
     content,
     ...parsed,
     year: parsed.date.split('-')[0],

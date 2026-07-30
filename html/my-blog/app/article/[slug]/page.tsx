@@ -1,4 +1,8 @@
-import { getPostData, getAllPostSlugs, getGroupedPosts } from "@/lib/posts";
+import {
+  getPostData,
+  getAllPostSlugs,
+  getGroupedPosts,
+} from "@/lib/posts";
 import type { Metadata } from "next";
 import Link from "next/link";
 import "katex/dist/katex.min.css";
@@ -38,13 +42,16 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
   const postData = getPostData(slug);
+  const decodedSlug = postData.slug;
 
   const groups = getGroupedPosts();
   const sortedPosts = groups.flatMap((g) => g.posts);
-  const currentIndex = sortedPosts.findIndex((p) => p.slug === slug);
+  const currentIndex = sortedPosts.findIndex((p) => p.slug === decodedSlug);
   const prevPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
   const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
-  const otherPosts = sortedPosts.filter((p) => p.slug !== slug).slice(0, 5);
+  const otherPosts = sortedPosts
+    .filter((p) => p.slug !== decodedSlug)
+    .slice(0, 5);
 
   return (
     <ArticleTheme theme={postData.theme}>
