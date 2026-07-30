@@ -1,6 +1,6 @@
 ---
 title: AI时代的自主权
-date: 2026-07-30
+date: "2026-07-30"
 tags:
   - 随笔
   - short
